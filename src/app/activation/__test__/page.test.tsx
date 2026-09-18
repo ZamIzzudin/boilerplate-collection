@@ -62,10 +62,10 @@ describe("ActivationPage", () => {
   it("render TokenPasswordForm dengan props yang benar", () => {
     render(<ActivationPage />);
 
-    expect(screen.getByTestId("title")).toHaveTextContent("Aktivasi Akun Regulator SITOLAUT");
+    expect(screen.getByTestId("title")).toHaveTextContent("Aktivasi Akun NUTECH BOILERPLATE");
     expect(screen.getByTestId("button-text")).toHaveTextContent("Simpan Kata Sandi");
     expect(screen.getByTestId("alert-title")).toHaveTextContent("Kata sandi akun Anda sudah disimpan!");
-    expect(screen.getByTestId("alert-description")).toHaveTextContent("Lakukan proses log in untuk mengakses akun Regulator SITOLAUT Anda");
+    expect(screen.getByTestId("alert-description")).toHaveTextContent("Lakukan proses log in untuk mengakses akun NUTECH BOILERPLATE Anda");
     expect(screen.getByTestId("action")).toHaveTextContent("activation");
   });
 

@@ -38,7 +38,7 @@ jest.mock("@/app/login/components/shared/auth-fields", () => ({
 import { LoginForm } from "../login-form";
 
 const defaultProps = {
-  form: { email: "", password: "", captcha: "", userTypeId: "" },
+  form: { email: "", password: "", captcha: "" },
   setForm: jest.fn(),
   loading: false,
   captchaRef: { current: document.createElement("div") },

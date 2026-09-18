@@ -30,7 +30,7 @@ export default function ResetPasswordPage() {
       title="Atur Ulang Kata Sandi"
       buttonText="Atur Ulang Kata Sandi"
       alertTitle="Kata sandi akun Anda sudah diatur ulang!"
-      alertDescription="Lakukan proses log in untuk mengakses akun SITOLAUT Anda"
+      alertDescription="Lakukan proses log in untuk mengakses akun NUTECH BOILERPLATE Anda"
       action="reset"
       onSubmit={handleSubmit}
     />

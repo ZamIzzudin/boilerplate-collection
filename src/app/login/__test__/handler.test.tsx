@@ -12,7 +12,7 @@ const mockedPost = apiNewClient.post as jest.Mock;
 describe("handler.login", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("posts to /auth/login with email, user_type_id, password", async () => {
+  it("posts to /auth/login with email and password", async () => {
     mockedPost.mockResolvedValue({
       data: { user_email: "a@b.com" },
       headers: {},
@@ -21,14 +21,10 @@ describe("handler.login", () => {
     const result = await handler.login({
       email: "a@b.com",
       password: "pass",
-      userTypeId: "3",
-      confirmPassword: "",
-      captcha: "",
     });
 
     expect(mockedPost).toHaveBeenCalledWith("/auth/login", {
       email: "a@b.com",
-      user_type_id: "3",
       password: "pass",
     });
     expect(result).toEqual({ user_email: "a@b.com" });
@@ -43,9 +39,6 @@ describe("handler.login", () => {
     const result = await handler.login({
       email: "a@b.com",
       password: "pass",
-      userTypeId: "3",
-      confirmPassword: "",
-      captcha: "",
     });
 
     expect(result.perm_version).toBe("v1");
@@ -60,9 +53,6 @@ describe("handler.login", () => {
     const result = await handler.login({
       email: "a@b.com",
       password: "pass",
-      userTypeId: "3",
-      confirmPassword: "",
-      captcha: "",
     });
 
     expect(result.perm_version).toBeUndefined();
@@ -72,16 +62,14 @@ describe("handler.login", () => {
 describe("handler.forgotPassword", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("posts to /user/forgot-password with user_type, email, submitted_by_admin", async () => {
+  it("posts to /user/forgot-password with email and submitted_by_admin", async () => {
     mockedPost.mockResolvedValue({ data: { status: 0 } });
 
     const result = await handler.forgotPassword({
       email: "user@test.com",
-      userTypeId: "3",
     });
 
     expect(mockedPost).toHaveBeenCalledWith("/user/forgot-password", {
-      user_type: "3",
       email: "user@test.com",
       submitted_by_admin: false,
     });

@@ -13,7 +13,7 @@ services:
     networks:
       - swarm-network-1
     volumes:
-      - /home/docker/volumes/tollaut_ternak_shared:/usr/local/apache2/htdocs/public/uploads
+      - /home/docker/volumes/nutech_boilerplate_shared:/usr/local/apache2/htdocs/public/uploads
     env_file:
       - .env-dev
 

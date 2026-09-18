@@ -122,8 +122,8 @@ export function TokenPasswordForm({
     <div className="relative flex items-center justify-center h-screen px-4 overflow-hidden">
       <div className="absolute top-10 left-10">
         <img
-          src="/lcs_logo.png"
-          alt="lcs_logo"
+          src="/nutech_logo.svg"
+          alt="nutech_logo"
           className="w-full h-auto max-w-50"
         />
       </div>
@@ -151,7 +151,7 @@ export function TokenPasswordForm({
                     Link ini sudah tidak berlaku!
                   </h2>
                   <p className="text-sm leading-5">
-                    Aktivasi akun regulator SITOLAUT sudah dilakukan. Lakukan
+                    Aktivasi akun NUTECH BOILERPLATE sudah dilakukan. Lakukan
                     proses log in untuk mengakses akun Anda
                   </p>
                 </div>
@@ -171,7 +171,7 @@ export function TokenPasswordForm({
                   <h2 className="text-2xl font-semibold">{title}</h2>
                   <p className="text-sm leading-5">
                     Pastikan kata sandi baru mudah diingat, namun tetap aman
-                    untuk melindungi akun SITOLAUT{" "}
+                    untuk melindungi akun NUTECH BOILERPLATE{" "}
                     <span className="font-semibold">
                       {maskEmail(data.email)}
                     </span>

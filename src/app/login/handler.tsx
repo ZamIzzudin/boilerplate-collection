@@ -16,7 +16,6 @@ export const handler = {
       "/auth/login",
       {
         email: payload.email,
-        user_type_id: payload.userTypeId,
         password: payload.password,
       },
     );
@@ -25,7 +24,6 @@ export const handler = {
   },
   forgotPassword: async (payload: ForgotPasswordPayload) => {
     const { data } = await apiNewClient.post("/user/forgot-password", {
-      user_type: payload.userTypeId,
       email: payload.email,
       submitted_by_admin: false,
     });

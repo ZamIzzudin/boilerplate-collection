@@ -5,7 +5,6 @@ describe("loginSchema", () => {
     const result = loginSchema.safeParse({
       email: "a@b.com",
       password: "pass",
-      userTypeId: "3",
     });
     expect(result.success).toBe(true);
   });
@@ -14,7 +13,6 @@ describe("loginSchema", () => {
     const result = loginSchema.safeParse({
       email: "not-email",
       password: "pass",
-      userTypeId: "3",
     });
     expect(result.success).toBe(false);
   });
@@ -23,16 +21,6 @@ describe("loginSchema", () => {
     const result = loginSchema.safeParse({
       email: "a@b.com",
       password: "",
-      userTypeId: "3",
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("missing userTypeId", () => {
-    const result = loginSchema.safeParse({
-      email: "a@b.com",
-      password: "pass",
-      userTypeId: "",
     });
     expect(result.success).toBe(false);
   });
@@ -41,7 +29,6 @@ describe("loginSchema", () => {
     const result = loginSchema.safeParse({
       email: "a@b.com",
       password: "pass",
-      userTypeId: "3",
     });
     expect(result.success).toBe(true);
   });
@@ -51,7 +38,6 @@ describe("forgotPasswordSchema", () => {
   it("valid data", () => {
     const result = forgotPasswordSchema.safeParse({
       email: "a@b.com",
-      userTypeId: "3",
     });
     expect(result.success).toBe(true);
   });
@@ -59,15 +45,6 @@ describe("forgotPasswordSchema", () => {
   it("invalid email", () => {
     const result = forgotPasswordSchema.safeParse({
       email: "bad",
-      userTypeId: "3",
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("missing userTypeId", () => {
-    const result = forgotPasswordSchema.safeParse({
-      email: "a@b.com",
-      userTypeId: "",
     });
     expect(result.success).toBe(false);
   });

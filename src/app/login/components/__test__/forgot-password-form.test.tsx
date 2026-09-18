@@ -35,17 +35,12 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { ForgotPasswordForm } from "../forgot-password-form";
 
 const defaultProps = {
-  form: { userTypeId: "", email: "" },
+  form: { email: "" },
   setForm: jest.fn(),
   loading: false,
   isSuccess: false,
   onSubmit: jest.fn(),
   setFormType: jest.fn(),
-  userTypeOptions: [],
-  userTypeLoading: false,
-  userTypeSearch: "",
-  setUserTypeSearch: jest.fn(),
-  loadMoreUserTypes: jest.fn(),
   formErrors: {},
 };
 
@@ -71,11 +66,6 @@ describe("ForgotPasswordForm", () => {
   it("renders email field", () => {
     render(<ForgotPasswordForm {...defaultProps} />);
     expect(screen.getByTestId("email")).toBeInTheDocument();
-  });
-
-  it("renders user type selector", () => {
-    render(<ForgotPasswordForm {...defaultProps} />);
-    expect(screen.getByTestId("userTypeId")).toBeInTheDocument();
   });
 
   it("renders submit button with Kirim Tautan text", () => {

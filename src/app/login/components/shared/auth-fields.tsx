@@ -7,7 +7,6 @@ interface AuthFieldsProps {
   form: {
     email: string;
     password: string;
-    userTypeId: string;
   };
   setForm: Dispatch<
     SetStateAction<{
@@ -15,14 +14,8 @@ interface AuthFieldsProps {
       password: string;
       confirmPassword: string;
       captcha: string;
-      userTypeId: string;
     }>
   >;
-  userTypeOptions?: { label: string; value: string }[];
-  userTypeLoading?: boolean;
-  userTypeSearch?: string;
-  setUserTypeSearch?: (value: string) => void;
-  loadMoreUserTypes?: () => void;
   fieldErrors: Record<string, string>;
   setFormType?: Dispatch<SetStateAction<"forgot-password" | "login">>;
   resetForm?: () => void;
@@ -36,11 +29,6 @@ interface AuthFieldsProps {
 export function AuthFields({
   form,
   setForm,
-  userTypeOptions,
-  userTypeLoading,
-  userTypeSearch,
-  setUserTypeSearch,
-  loadMoreUserTypes,
   fieldErrors,
   setFormType,
   resetForm,
@@ -54,23 +42,6 @@ export function AuthFields({
 
   return (
     <>
-      <FormField
-        id="userTypeId"
-        label="Jenis User"
-        type="select"
-        value={form.userTypeId}
-        onChange={(e) => handleFieldChange("userTypeId", e.target.value)}
-        options={userTypeOptions ?? []}
-        placeholder="Pilih jenis user"
-        searchable={Boolean(userTypeOptions)}
-        selectLoading={userTypeLoading}
-        selectLoadingLabel="Memuat jenis user..."
-        onSearchChange={setUserTypeSearch}
-        onScrollToBottom={loadMoreUserTypes}
-        required
-        error={fieldErrors.userTypeId}
-      />
-
       <FormField
         id="email"
         label="Email"

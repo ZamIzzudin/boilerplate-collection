@@ -6,5 +6,4 @@ export type {
 
 export type ForgotPasswordPayload = {
   email: string;
-  userTypeId: string;
 };

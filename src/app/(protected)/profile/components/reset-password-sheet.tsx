@@ -176,7 +176,7 @@ export default function ResetPasswordSheet({
 
   const title =
     step === 1
-      ? "Ubah Kata Sandi Akun SITOLAUT"
+      ? "Ubah Kata Sandi Akun NUTECH BOILERPLATE"
       : "Pengaturan ulang kata sandi";
   const description =
     step === 1

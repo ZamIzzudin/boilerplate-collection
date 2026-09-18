@@ -11,7 +11,6 @@ export type Permissions = Record<string, boolean>;
 export type LoginPayload = {
   email: string;
   password: string;
-  userTypeId: string;
 };
 
 export type LoginAction = {

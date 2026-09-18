@@ -22,7 +22,7 @@ describe("auth types", () => {
   });
 
   it("exports LoginPayload type", () => {
-    const payload: LoginPayload = { email: "t@t.com", password: "123", userTypeId: "1" };
+    const payload: LoginPayload = { email: "t@t.com", password: "123" };
     expect(payload.email).toBe("t@t.com");
   });
 

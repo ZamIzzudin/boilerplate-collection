@@ -109,7 +109,7 @@ const basePortRows: Omit<PortRow, "id">[] = [
     city: "Kab. Dompu",
   },
   {
-    name: "Ternak Malahayati",
+    name: "Malahayati",
     code: "MLH",
     province: "Aceh",
     city: "Kab. Simeulue",

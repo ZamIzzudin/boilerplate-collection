@@ -65,7 +65,7 @@ describe("ResetPasswordPage", () => {
     expect(screen.getByTestId("title")).toHaveTextContent("Atur Ulang Kata Sandi");
     expect(screen.getByTestId("button-text")).toHaveTextContent("Atur Ulang Kata Sandi");
     expect(screen.getByTestId("alert-title")).toHaveTextContent("Kata sandi akun Anda sudah diatur ulang!");
-    expect(screen.getByTestId("alert-description")).toHaveTextContent("Lakukan proses log in untuk mengakses akun SITOLAUT Anda");
+    expect(screen.getByTestId("alert-description")).toHaveTextContent("Lakukan proses log in untuk mengakses akun NUTECH BOILERPLATE Anda");
     expect(screen.getByTestId("action")).toHaveTextContent("reset");
   });
 

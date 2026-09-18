@@ -4,29 +4,21 @@ import { FormField } from "@/components/ui/form-field";
 import { Button } from "@/components/ui/button";
 import { forgotPasswordSchema } from "../schemas";
 import { maskEmail } from "@/lib/utils";
-import type { SelectOption } from "@/types";
 import { createBlurHandler, createChangeHandler } from "@/lib/validation";
 
 interface ForgotPasswordFormProps {
   form: {
-    userTypeId: string;
     email: string;
   };
   setForm: React.Dispatch<
     React.SetStateAction<{
-      userTypeId: string;
       email: string;
     }>
   >;
   loading: boolean;
   isSuccess: boolean;
-  onSubmit: (email: string, userTypeId: string) => void;
+  onSubmit: (email: string) => void;
   setFormType: React.Dispatch<React.SetStateAction<"login" | "forgot-password">>;
-  userTypeOptions: SelectOption[];
-  userTypeLoading: boolean;
-  userTypeSearch: string;
-  setUserTypeSearch: (search: string) => void;
-  loadMoreUserTypes: () => void;
   formErrors?: Record<string, string>;
 }
 
@@ -37,11 +29,6 @@ export function ForgotPasswordForm({
   isSuccess,
   onSubmit,
   setFormType,
-  userTypeOptions,
-  userTypeLoading,
-  userTypeSearch,
-  setUserTypeSearch,
-  loadMoreUserTypes,
   formErrors = {},
 }: Readonly<ForgotPasswordFormProps>) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -69,14 +56,13 @@ export function ForgotPasswordForm({
     }
 
     setSubmittedEmail(form.email);
-    onSubmit(form.email, form.userTypeId);
+    onSubmit(form.email);
   };
 
   const handleBackToLogin = () => {
     setForm((prev) => ({
       ...prev,
       email: "",
-      userTypeId: "",
     }));
     setFieldErrors({});
     setSubmittedEmail("");
@@ -108,7 +94,7 @@ export function ForgotPasswordForm({
             </h2>
             <p className="text-sm leading-5">
               Akses tautan dalam Email untuk mengatur kembali kata sandi akun
-              SITOLAUT Anda
+              NUTECH BOILERPLATE Anda
             </p>
           </div>
         </div>
@@ -132,26 +118,10 @@ export function ForgotPasswordForm({
         <h2 className="text-2xl font-semibold">Atur Ulang Kata Sandi</h2>
         <p className="text-sm leading-5">
           Kami akan mengirimkan tautan pengaturan kata sandi melalui Email Anda
-          yang terdaftar sebagai akun SITOLAUT
+          yang terdaftar sebagai akun NUTECH BOILERPLATE
         </p>
       </div>
       <form className="space-y-3" onSubmit={handleSubmit}>
-        <FormField
-          id="userTypeId"
-          label="Jenis User"
-          type="select"
-          value={form.userTypeId}
-          onChange={(e) => handleFieldChange("userTypeId", e.target.value)}
-          required
-          placeholder="Pilih jenis user"
-          error={mergedErrors.userTypeId}
-          options={userTypeOptions}
-          searchable
-          loading={userTypeLoading}
-          onSearchChange={setUserTypeSearch}
-          onScrollToBottom={loadMoreUserTypes}
-          selectLoadingLabel="Memuat jenis user..."
-        />
         <FormField
           id="email"
           label="Email"

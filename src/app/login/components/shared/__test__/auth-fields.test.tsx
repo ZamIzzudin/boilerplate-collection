@@ -23,7 +23,7 @@ jest.mock("@phosphor-icons/react", () => ({
 }));
 
 const defaultProps = {
-  form: { email: "", password: "", userTypeId: "" },
+  form: { email: "", password: "" },
   setForm: jest.fn(),
   fieldErrors: {},
   handleFieldChange: jest.fn(),
@@ -32,11 +32,6 @@ const defaultProps = {
 
 describe("AuthFields", () => {
   beforeEach(() => jest.clearAllMocks());
-
-  it("renders user type selector", () => {
-    render(<AuthFields {...defaultProps} />);
-    expect(screen.getByTestId("userTypeId")).toBeInTheDocument();
-  });
 
   it("renders email field", () => {
     render(<AuthFields {...defaultProps} />);
@@ -78,17 +73,6 @@ describe("AuthFields", () => {
       />,
     );
     expect(screen.getByText("Email is required")).toBeInTheDocument();
-  });
-
-  it("passes userTypeOptions to FormField", () => {
-    const options = [{ value: "1", label: "Operator" }];
-    render(<AuthFields {...defaultProps} userTypeOptions={options} />);
-    expect(screen.getByTestId("userTypeId")).toBeInTheDocument();
-  });
-
-  it("passes userTypeLoading to FormField", () => {
-    render(<AuthFields {...defaultProps} userTypeLoading={true} />);
-    expect(screen.getByTestId("userTypeId")).toBeInTheDocument();
   });
 
   it("passes minLength to password field", () => {

@@ -27,10 +27,10 @@ export default function ActivationPage() {
 
   return (
     <TokenPasswordForm
-      title="Aktivasi Akun Regulator SITOLAUT"
+      title="Aktivasi Akun NUTECH BOILERPLATE"
       buttonText="Simpan Kata Sandi"
       alertTitle="Kata sandi akun Anda sudah disimpan!"
-      alertDescription="Lakukan proses log in untuk mengakses akun Regulator SITOLAUT Anda"
+      alertDescription="Lakukan proses log in untuk mengakses akun NUTECH BOILERPLATE Anda"
       action="activation"
       onSubmit={handleSubmit}
     />

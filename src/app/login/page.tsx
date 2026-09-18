@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/auth-store";
 import { usePrivilegeStore } from "@/store/privilege-store";
 import useCaptcha from "@/hooks/use-captcha";
-import { useUserTypeOptions } from "@/hooks/use-user-type-options";
 import { useLogin, useForgotPassword } from "./hook";
 
 import { notifyFailed, notifyWarning } from "@/lib/notify";
@@ -17,7 +16,6 @@ type LoginFormState = {
   password: string;
   confirmPassword: string;
   captcha: string;
-  userTypeId: string;
 };
 
 interface IUserOpt {
@@ -49,7 +47,6 @@ const initialForm: LoginFormState = {
   password: "",
   confirmPassword: "",
   captcha: "",
-  userTypeId: "",
 };
 
 export default function LoginPage() {
@@ -75,7 +72,6 @@ export default function LoginPage() {
   const captchaRef = useRef<HTMLDivElement | null>(null);
   const [forgotPasswordForm, setForgotPasswordForm] = useState({
     email: "",
-    userTypeId: "",
   });
   const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -102,20 +98,6 @@ export default function LoginPage() {
     validate: (value: string) => boolean;
   };
 
-  const {
-    options: loginTypeOptions,
-    loading: loginTypeLoading,
-    search: loginTypeSearch,
-    setSearch: setLoginTypeSearch,
-    loadMore: loadMoreLoginTypes,
-  } = useUserTypeOptions();
-
-  useEffect(() => {
-    if (formType === "forgot-password") {
-      setLoginTypeSearch("");
-    }
-  }, [formType, setLoginTypeSearch]);
-
   useEffect(() => {
     if (!captchaRef.current) return;
 
@@ -141,7 +123,6 @@ export default function LoginPage() {
     const payload = {
       email: form.email,
       password: form.password,
-      userTypeId: form.userTypeId,
     };
 
     handleLogin(payload, {
@@ -185,9 +166,9 @@ export default function LoginPage() {
     });
   }
 
-  function onForgotPassword(email: string, userTypeId: string) {
+  function onForgotPassword(email: string) {
     handleForgotPassword(
-      { email, userTypeId: userTypeId },
+      { email },
       {
         onSuccess: (response: any) => {
           if (response?.status === 0) {
@@ -233,8 +214,8 @@ export default function LoginPage() {
         >
           <div className="flex flex-col flex-1 h-full gap-5">
             <img
-              src="/lcs_logo.png"
-              alt="lcs_logo"
+              src="/nutech_logo.svg"
+              alt="nutech_logo"
               className="max-w-50 w-full h-auto"
             />
           </div>
@@ -248,11 +229,6 @@ export default function LoginPage() {
               <LoginForm
                 form={form}
                 setForm={setForm}
-                userTypeOptions={loginTypeOptions}
-                userTypeLoading={loginTypeLoading}
-                userTypeSearch={loginTypeSearch}
-                setUserTypeSearch={setLoginTypeSearch}
-                loadMoreUserTypes={loadMoreLoginTypes}
                 loading={loading}
                 captchaRef={captchaRef}
                 onSubmit={onLogin}
@@ -274,11 +250,6 @@ export default function LoginPage() {
                 isSuccess={forgotPasswordSuccess}
                 onSubmit={onForgotPassword}
                 setFormType={setFormType}
-                userTypeOptions={loginTypeOptions}
-                userTypeLoading={loginTypeLoading}
-                userTypeSearch={loginTypeSearch}
-                setUserTypeSearch={setLoginTypeSearch}
-                loadMoreUserTypes={loadMoreLoginTypes}
                 formErrors={formErrors}
               />
             </div>

@@ -45,8 +45,8 @@ export function AppSidebar({
       <div className="flex items-center justify-between px-5 h-15">
         {!collapsed && (
           <img
-            src="/lcs_logo.png"
-            alt="lcs_logo"
+            src="/nutech_logo.svg"
+            alt="nutech_logo"
             className="w-full h-auto max-w-40"
           />
         )}

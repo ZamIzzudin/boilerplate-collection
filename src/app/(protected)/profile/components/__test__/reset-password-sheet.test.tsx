@@ -92,7 +92,7 @@ describe("ResetPasswordSheet", () => {
     renderSheet();
     expect(screen.getByTestId("current-password")).toBeInTheDocument();
     expect(screen.getByTestId("sheet-title")).toHaveTextContent(
-      "Ubah Kata Sandi Akun SITOLAUT",
+      "Ubah Kata Sandi Akun NUTECH BOILERPLATE",
     );
     expect(screen.getByTestId("sheet-header")).toHaveTextContent(
       "Atur Ulang Kata Sandi",

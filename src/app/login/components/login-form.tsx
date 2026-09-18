@@ -11,7 +11,6 @@ interface LoginFormProps {
     email: string;
     password: string;
     captcha: string;
-    userTypeId: string;
   };
   setForm: React.Dispatch<
     React.SetStateAction<{
@@ -19,14 +18,8 @@ interface LoginFormProps {
       password: string;
       confirmPassword: string;
       captcha: string;
-      userTypeId: string;
     }>
   >;
-  userTypeOptions?: { label: string; value: string }[];
-  userTypeLoading?: boolean;
-  userTypeSearch?: string;
-  setUserTypeSearch?: (value: string) => void;
-  loadMoreUserTypes?: () => void;
   loading: boolean;
   captchaRef: React.RefObject<HTMLDivElement | null>;
   onSubmit: (e: SubmitEvent<HTMLFormElement>) => void;
@@ -41,11 +34,6 @@ interface LoginFormProps {
 export function LoginForm({
   form,
   setForm,
-  userTypeOptions,
-  userTypeLoading,
-  userTypeSearch,
-  setUserTypeSearch,
-  loadMoreUserTypes,
   loading,
   captchaRef,
   onSubmit,
@@ -127,11 +115,6 @@ export function LoginForm({
         <AuthFields
           form={form}
           setForm={setForm}
-          userTypeOptions={userTypeOptions}
-          userTypeLoading={userTypeLoading}
-          userTypeSearch={userTypeSearch}
-          setUserTypeSearch={setUserTypeSearch}
-          loadMoreUserTypes={loadMoreUserTypes}
           fieldErrors={mergedErrors}
           setFormType={setFormType}
           resetForm={resetForm}

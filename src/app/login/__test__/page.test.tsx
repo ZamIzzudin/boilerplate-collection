@@ -20,19 +20,6 @@ jest.mock("@/hooks/use-captcha", () => ({
   }),
 }));
 
-jest.mock("@/hooks/use-user-type-options", () => ({
-  useUserTypeOptions: () => ({
-    options: [
-      { value: "opt1", label: "Operator" },
-      { value: "opt2", label: "Shipper" },
-    ],
-    loading: false,
-    search: "",
-    setSearch: jest.fn(),
-    loadMore: jest.fn(),
-  }),
-}));
-
 jest.mock("@/store/auth-store", () => ({
   useAuthStore: (selector: any) =>
     selector({
@@ -152,11 +139,6 @@ describe("LoginFormPage", () => {
   it("has submit buttons", () => {
     renderPage();
     expect(screen.getByText("Log In")).toBeInTheDocument();
-  });
-
-  it("renders user type selector", () => {
-    renderPage();
-    expect(screen.getByTestId("userTypeId")).toBeInTheDocument();
   });
 
   it("renders login heading text", () => {

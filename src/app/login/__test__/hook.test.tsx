@@ -24,9 +24,6 @@ describe("useLogin", () => {
       await result.current.mutateAsync({
         email: "a@b.com",
         password: "p",
-        userTypeId: "3",
-        confirmPassword: "",
-        captcha: "",
       });
     });
 
@@ -43,9 +40,6 @@ describe("useLogin", () => {
         await result.current.mutateAsync({
           email: "a@b.com",
           password: "p",
-          userTypeId: "3",
-          confirmPassword: "",
-          captcha: "",
         });
       }),
     ).rejects.toThrow("fail");
@@ -63,7 +57,6 @@ describe("useForgotPassword", () => {
     await act(async () => {
       await result.current.mutateAsync({
         email: "a@b.com",
-        userTypeId: "3",
       });
     });
 
@@ -79,7 +72,6 @@ describe("useForgotPassword", () => {
       act(async () => {
         await result.current.mutateAsync({
           email: "a@b.com",
-          userTypeId: "3",
         });
       }),
     ).rejects.toThrow("Network error");
