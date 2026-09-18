@@ -29,7 +29,9 @@ Spesifikasi (harus identik di kedua sisi):
 ## 1. Auth
 
 ### POST `/auth/login`
-Body: `{ "email": "", "user_type_id": "", "password": "" }`
+Body: `{ "email": "", "password": "" }`
+
+> Jenis user **tidak lagi dikirim** saat login. Backend mengenali user type dari kombinasi email + password yang cocok (email unik).
 
 Response `200` + header `x-perm-version` + set cookie session:
 ```json
@@ -74,7 +76,7 @@ Hapus cookie session.
 Semua body bertanda 🔒 dikirim sebagai `{ "data": "<encrypted>" }`.
 
 ### POST `/user/forgot-password`
-Body: `{ "user_type": "<user_type_id>", "email": "", "submitted_by_admin": false }`
+Body: `{ "email": "", "submitted_by_admin": false }`
 Response: `{ "status": 0, "message": "..." }` (sukses). Email berisi link `/reset/:token` dengan token = 🔒 `{ "email": "", "token": "" }`.
 
 ### POST `/user/reset-password`

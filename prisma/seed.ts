@@ -4,14 +4,25 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 const ACTIONS = [
-  { key: "LIST", name: "List" },
-  { key: "VIEW", name: "View" },
-  { key: "ADD", name: "Add" },
-  { key: "EDIT", name: "Edit" },
-  { key: "DELETE", name: "Delete" },
-  { key: "RESET", name: "Reset Password" },
-  { key: "ACTIVE_TOGGLE", name: "Aktif/Nonaktif" },
-  { key: "DOWNLOAD", name: "Download" },
+  { code: "ACT1780387013007", name: "View" },
+  { code: "ACT1779689449003", name: "Add" },
+  { code: "ACT1780387019008", name: "Edit" },
+  { code: "ACT1780387028009", name: "Delete" },
+  { code: "ACT1780458369010", name: "Approve" },
+  { code: "ACT1781146783014", name: "Reject" },
+  { code: "ACT1780978958011", name: "Reset Password" },
+  { code: "ACT1781056372012", name: "List" },
+  { code: "ACT1781057065013", name: "Aktif/Nonaktif" },
+  { code: "ACT1782444061019", name: "Download" },
+  { code: "ACT1781925870016", name: "Edit Room" },
+  { code: "ACT1781925881017", name: "Delete Room" },
+  { code: "ACT1782714618026", name: "Upload Health" },
+  { code: "ACT1782714499023", name: "Upload Payment" },
+  { code: "ACT1782714469022", name: "Upload Quarantine" },
+  { code: "ACT1782714312020", name: "Verifikasi Payment" },
+  { code: "ACT1782714532024", name: "Verifikasi QR" },
+  { code: "ACT1782714363021", name: "Verifikasi Quarantine" },
+  { code: "ACT1782714708027", name: "Cancel" },
 ];
 
 const MENUS = [
@@ -28,8 +39,8 @@ async function main(): Promise<void> {
   const actionRecords = [];
   for (const action of ACTIONS) {
     const record = await prisma.action.upsert({
-      where: { code: `ACT_${action.key}` },
-      create: { code: `ACT_${action.key}`, name: action.name },
+      where: { code: action.code },
+      create: { code: action.code, name: action.name },
       update: { name: action.name },
     });
     actionRecords.push(record);

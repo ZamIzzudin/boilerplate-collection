@@ -29,7 +29,6 @@ const loadMenuContext = async (userTypeId: number) => {
 };
 
 export const authService = {
-  /** Health check endpoint used by the frontend register flow (email availability). */
   async checkEmail(email: string) {
     const existing = await prisma.user.findUnique({ where: { email } });
     return {
@@ -38,7 +37,7 @@ export const authService = {
     };
   },
 
-  async login({ email, user_type_id, password }: LoginInput) {
+  async login({ email, password }: LoginInput) {
     const user = await prisma.user.findUnique({
       where: { email },
       include: { userType: true },
@@ -61,10 +60,6 @@ export const authService = {
       throw AppError.forbidden("Akun Anda tidak aktif");
     }
 
-    if (String(user.userTypeId) !== String(user_type_id)) {
-      throw AppError.unauthorized("Jenis user tidak sesuai");
-    }
-
     const menus = await loadMenuContext(user.userTypeId);
     const tokenPayload = {
       sub: user.id,
@@ -72,18 +67,21 @@ export const authService = {
       userTypeId: user.userTypeId,
     };
 
+    const accessToken = signAccessToken(tokenPayload);
+    const refreshToken = signRefreshToken(tokenPayload);
+
     return {
       pending: false as const,
-      accessToken: signAccessToken(tokenPayload),
-      refreshToken: signRefreshToken(tokenPayload),
+      accessToken,
+      refreshToken,
       data: {
         id: user.id,
         user_email: user.email,
         user_status: user.statusCode,
         user_type_user_type_id: String(user.userTypeId),
         user_type_name: user.userType.name,
-        access_token: signAccessToken(tokenPayload),
-        refresh_token: signRefreshToken(tokenPayload),
+        access_token: accessToken,
+        refresh_token: refreshToken,
         actions: [],
         menus,
       },
@@ -146,11 +144,11 @@ export const authService = {
     };
   },
 
-  async forgotPassword(email: string, userType?: string) {
+  async forgotPassword(email: string) {
     const user = await prisma.user.findUnique({ where: { email } });
 
     // Always respond success to avoid email enumeration.
-    if (!user || (userType && String(user.userTypeId) !== String(userType))) {
+    if (!user) {
       return { status: 0, message: "Jika email terdaftar, tautan reset telah dikirim" };
     }
 

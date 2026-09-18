@@ -2,6 +2,13 @@ import request from "supertest";
 import { createApp } from "@/app";
 import { signAccessToken } from "@/lib/jwt";
 
+jest.mock("@/lib/password", () => ({
+  hashPassword: jest.fn(async (plain: string) => `hashed:${plain}`),
+  comparePassword: jest.fn(async (plain: string) => plain === "Secret123!"),
+  isStrongPassword: jest.fn(() => true),
+  PASSWORD_REGEX: /.*/,
+}));
+
 jest.mock("@/lib/prisma", () => {
   const user = {
     id: "user-1",
@@ -56,6 +63,39 @@ describe("auth routes", () => {
     expect(res.status).toBe(200);
     expect(res.body.data.user_email).toBe("admin@boilerplate.local");
     expect(res.headers["x-perm-version"]).toBeDefined();
+  });
+
+  it("POST /auth/login authenticates with email and password only", async () => {
+    const res = await request(app).post("/auth/login").send({
+      email: "admin@boilerplate.local",
+      password: "Secret123!",
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe(1);
+    expect(res.body.data.user_type_name).toBe("Superadmin");
+    expect(res.body.data.user_type_user_type_id).toBe("1");
+    expect(res.headers["x-perm-version"]).toBeDefined();
+  });
+
+  it("POST /auth/login rejects a wrong password without a user_type_id", async () => {
+    const res = await request(app).post("/auth/login").send({
+      email: "admin@boilerplate.local",
+      password: "wrong-password",
+    });
+
+    expect(res.status).toBe(401);
+  });
+
+  it("POST /auth/login ignores a stray user_type_id", async () => {
+    const res = await request(app).post("/auth/login").send({
+      email: "admin@boilerplate.local",
+      password: "Secret123!",
+      user_type_id: "999",
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.user_type_user_type_id).toBe("1");
   });
 
   it("GET /auth/refresh without a refresh cookie returns 401", async () => {

@@ -95,7 +95,7 @@ src/
 
 ## Alur Auth
 
-1. **Login** (`POST /auth/login`) — verifikasi kredensial & `user_type_id`, lalu set dua cookie httpOnly:
+1. **Login** (`POST /auth/login`) — verifikasi kredensial (`email` + `password`; jenis user dikenali dari akun yang cocok), lalu set dua cookie httpOnly:
    - `access_token` (default 30 menit) — dipakai `authenticate` middleware.
    - `internal_session` (default 7 hari) — refresh token, dipakai `GET /auth/refresh`.
    Response berisi data user + menu tree + header `x-perm-version`.

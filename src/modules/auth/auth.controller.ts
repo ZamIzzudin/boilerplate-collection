@@ -77,10 +77,7 @@ export const authController = {
     req: Request<unknown, unknown, z.infer<typeof forgotPasswordSchema>>,
     res: Response,
   ) {
-    const result = await authService.forgotPassword(
-      req.body.email,
-      req.body.user_type === undefined ? undefined : String(req.body.user_type),
-    );
+    const result = await authService.forgotPassword(req.body.email);
     return res.status(200).json(result);
   },
 

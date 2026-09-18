@@ -2,17 +2,14 @@ import { z } from "zod";
 
 export const loginSchema = z.object({
   email: z.string().email("Email tidak valid"),
-  user_type_id: z.union([z.string(), z.number()]).transform(String),
   password: z.string().min(1, "Password wajib diisi"),
 });
 
 export const checkEmailSchema = z.object({
   email: z.string().email("Email tidak valid"),
-  user_type_id: z.union([z.string(), z.number()]).transform(String),
 });
 
 export const forgotPasswordSchema = z.object({
-  user_type: z.union([z.string(), z.number()]).optional(),
   email: z.string().email("Email tidak valid"),
   submitted_by_admin: z.boolean().optional().default(false),
 });
