@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: boilerplate
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/boilerplate?schema=public
+      JWT_SECRET: change-me-in-production
+      SESSION_COOKIE_NAME: internal_session
+      ACCESS_COOKIE_NAME: access_token
+      APP_KEY: base64:c3VwZXJzZWNyZXRrZXlib2lsZXJwbGF0ZTEyMzQ1Njc4OQ==
+      APP_CIPHER: aes-256-cbc
+      CORS_ORIGINS: http://localhost:5173
+      APP_URL: http://localhost:5173
+    ports:
+      - "4000:4000"
+    command: sh -c "npx prisma migrate deploy && node dist/src/server.js"
+
+volumes:
+  db_data:

@@ -1,50 +1,128 @@
-# 🗂️ Boilerplate Repository
+# Express Boilerplate
 
-Repositori penyimpanan boilerplate dengan **konsep git branch**: setiap branch adalah satu varian boilerplate yang siap dipakai (checkout branch → copy/salim → mulai develop).
+Boilerplate backend internal app: **Express 5 + TypeScript + Prisma + PostgreSQL**.
 
-## 📌 Daftar Branch
+Mengimplementasikan **modul auth lengkap** (login, refresh token httpOnly cookie, me, logout, lupa/reset password, aktivasi akun) dan **RBAC** (user, role/user-type, action, menu, privilege) sesuai kontrak API yang dipakai frontend.
 
-| Branch | Stack | Status | Keterangan |
-|---|---|---|---|
-| `main` | — | ✅ | Dokumentasi konsep repo (branch ini) |
-| `react-vite` | React 19 + Vite 7 + TS + Tailwind 4 + shadcn (Base UI) | ✅ | Frontend internal app: auth + RBAC + global components |
-| `express` | Express 5 + TS + Prisma + PostgreSQL | ✅ | Backend API: modul auth lengkap (login, refresh token cookie, RBAC, reset & activation password) |
+> Bagian dari repo [boilerplate](../README.md). Frontend pasangannya ada di branch **`react-vite`**. Kontrak API: [`docs/API-CONTRACT.md`](./docs/API-CONTRACT.md).
 
-> Kedua boilerplate **saling terkait**: `react-vite` dirancang untuk berintegrasi langsung dengan API contract yang diimplementasikan oleh `express` (lihat `docs/API-CONTRACT.md` di masing-masing branch).
+## Tech Stack
 
-## 🧭 Cara Pakai
+| Kategori | Teknologi |
+|---|---|
+| Runtime | Node.js 22, TypeScript 5 |
+| Framework | Express 5 |
+| ORM/DB | Prisma 6 + PostgreSQL |
+| Auth | JWT (access + refresh) dalam httpOnly cookie |
+| Keamanan | Helmet, CORS credentials, bcryptjs, AES-256-CBC (crypto-js) |
+| Validasi | Zod |
+| Testing | Jest + Supertest |
+| Tooling | tsx (dev), tsc + tsc-alias (build) |
+
+## Menjalankan
 
 ```bash
-# 1. Ambil boilerplate frontend
-git clone <repo-url> my-app
-cd my-app
-git checkout react-vite
+cp .env.example .env            # sesuaikan DATABASE_URL & APP_KEY (harus sama dengan frontend)
 
-# 2. Atau ambil boilerplate backend
-git clone <repo-url> my-api
-cd my-api
-git checkout express
+npm install
+npm run prisma:generate
+npm run prisma:migrate          # membuat tabel di database
+npm run prisma:seed             # seed role, action, menu, privilege + admin
+npm run dev                     # http://localhost:4000
 ```
 
-Setelah checkout, hapus folder `.git` lalu `git init` ulang untuk project baru, atau push langsung ke remote baru.
+Atau pakai Docker (PostgreSQL + API sekaligus):
 
-## 🏛️ Prinsip
-
-1. **`main` tidak berisi kode** — hanya dokumentasi konsep.
-2. **Satu branch = satu tech stack boilerplate.** Branch baru (mis. `next-js`, `nestjs`) dibuat dari `main` dan harus mengimplementasikan **API contract modul auth** yang sama agar tetap kompatibel dengan frontend boilerplate mana pun.
-3. **Modul wajib** untuk semua boilerplate: auth (login/logout/refresh/me), RBAC (user, role/user-type, action, menu, privilege), reset & activation password.
-4. **Jangan mengubah branch boilerplate setelah dipakai project lain** — perbaikan dilakukan di branch boilerplate-nya, project turunan melakukan cherry-pick/rebase sesuai kebutuhan.
-
-## 🔗 Relasi Frontend ↔ Backend
-
-```
-react-vite (SPA)  ──►  /api (vite dev proxy)  ──►  express (API)
-      │                                                    │
-      └──────────── cookie-based auth (httpOnly refresh) ──┘
+```bash
+docker compose up --build
 ```
 
-- Auth berbasis **httpOnly cookie** (refresh token) + auto-refresh via axios interceptor dengan failed-request queue.
-- Enkripsi payload sensitif (reset/activation) memakai **AES-256-CBC** dengan key yang sama (`VITE_APP_KEY` / `APP_KEY`) — key harus identik di kedua sisi.
-- Header `x-perm-version` dipakai frontend untuk deteksi perubahan privilege secara real-time.
+### Akun seed default
 
-Detail lengkap endpoint: baca `docs/API-CONTRACT.md` pada branch `react-vite` atau `express`.
+```
+email:    admin@boilerplate.local
+password: Admin123!
+```
+
+### Scripts
+
+| Perintah | Fungsi |
+|---|---|
+| `npm run dev` | Dev server (tsx watch) |
+| `npm run build` | Compile ke `dist/` (+ rewrite path alias) |
+| `npm start` | Jalankan hasil build |
+| `npm run lint` | ESLint |
+| `npm test` | Jest + Supertest |
+| `npm run test:cov` | Coverage |
+| `npm run prisma:migrate` | Migrasi dev |
+| `npm run prisma:deploy` | Migrasi production |
+| `npm run prisma:seed` | Seed data awal |
+| `npm run prisma:studio` | Prisma Studio |
+
+## Struktur
+
+```
+prisma/
+├── schema.prisma            # UserType, User, Action, Menu, MenuAction, Privilege, AuthToken, Setting
+└── seed.ts                  # seed role/action/menu/privilege + admin
+src/
+├── app.ts                   # express app (helmet, cors, cookie, routes, error handler)
+├── server.ts                # bootstrap + graceful shutdown
+├── config/env.ts            # env terpusat & tervalidasi
+├── routes/index.ts          # pemetaan seluruh router
+├── common/
+│   ├── errors.ts            # AppError
+│   ├── http/response.ts     # envelope response standar
+│   └── middleware/          # authenticate, authorize (RBAC), validate, permission-version, error-handler
+├── lib/                     # prisma, jwt, password, crypto, cookies, mailer, id, pagination
+└── modules/
+    ├── auth/                # login, me, refresh, logout, profile, forgot/reset/activation, check/change password
+    ├── user/                # CRUD user + role options + file avatar
+    ├── user-type/           # user type (+ /roles alias)
+    ├── action/              # CRUD action
+    ├── menu/                # CRUD menu + menu tree builder
+    └── privilege/           # matrix privilege per role
+```
+
+### Pola per-modul
+
+| File | Peran |
+|---|---|
+| `*.routes.ts` | Definisi endpoint + middleware (validate/authenticate) |
+| `*.controller.ts` | Terima request, panggil service, kirim response |
+| `*.service.ts` | Business logic + akses data (Prisma) |
+| `*.schema.ts` | Skema validasi Zod + tipe input |
+
+## Alur Auth
+
+1. **Login** (`POST /auth/login`) — verifikasi kredensial & `user_type_id`, lalu set dua cookie httpOnly:
+   - `access_token` (default 30 menit) — dipakai `authenticate` middleware.
+   - `internal_session` (default 7 hari) — refresh token, dipakai `GET /auth/refresh`.
+   Response berisi data user + menu tree + header `x-perm-version`.
+2. **Request terproteksi** — `authenticate` membaca cookie `access_token`. Bila tidak ada/kadaluarsa → `401`, frontend memanggil `/auth/refresh` lalu retry (axios interceptor + failed request queue).
+3. **Refresh** (`GET /auth/refresh`) — verifikasi refresh cookie, rotasi kedua cookie.
+4. **Logout** (`POST /auth/logout`) — bersihkan cookie.
+5. **Reset & aktivasi** — token sekali pakai disimpan di tabel `auth_tokens`; link email berisi ciphertext AES `{ email, token }`.
+
+## RBAC
+
+- **Menu tree** dibangun `buildMenuTree()` — hanya menu/action dengan privilege `ACTIVE` milik role user, sudah berbentuk nested (`subMenus`).
+- **Guard**: `authenticate` → `authorize(actionCode, menuCode)`, contoh:
+  ```ts
+  router.get("/users", authenticate, authorize("ACT_VIEW", "MNU_USER"), handler);
+  ```
+- **Permission version**: setiap perubahan menu/action/privilege memanggil `bumpPermissionVersion()` yang meng-update tabel `settings` dan meng-cache nilainya. Header `x-perm-version` diset ke semua response lewat middleware.
+
+## Enkripsi
+
+`src/lib/crypto.ts` kompatibel penuh dengan `src/lib/crypto.ts` frontend: AES-256-CBC, IV 16 byte di-prepend, base64url, PKCS7. **`APP_KEY` harus identik dengan `VITE_APP_KEY` frontend.** Body berisi `{ data: "<ciphertext>" }` didekripsi di controller (reset/activation/valid-token).
+
+## Deployment
+
+- `Dockerfile` multi-stage (build → runner alpine non-DB), `docker-compose.yaml` menyertakan PostgreSQL.
+- Production: jalankan `npm run prisma:deploy` sebelum start, set `COOKIE_SECURE=true` dan `JWT_SECRET` yang kuat.
+- CORS: `CORS_ORIGINS` harus berisi origin frontend, dengan kredensial aktif.
+
+## Integrasi Boilerplate Lain
+
+Backend ini adalah **referensi modul auth** untuk boilerplate boilerplate berikutnya. Jika membuat backend baru dengan stack berbeda (NestJS, Go, Laravel, dll), implementasikan endpoint & perilaku di `docs/API-CONTRACT.md` agar semua frontend boilerplate tetap kompatibel tanpa perubahan.

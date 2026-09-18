@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserType {
+  id                    Int         @id @default(autoincrement())
+  name                  String      @map("user_type_name")
+  form                  String?     @map("user_type_form")
+  showOnRegister        Boolean     @default(false) @map("user_type_show_on_register")
+  statusCode            String      @default("ACTIVE") @map("status_code")
+  createdAt             DateTime    @default(now()) @map("created_at")
+  updatedAt             DateTime    @updatedAt @map("updated_at")
+
+  users                 User[]
+  privileges            Privilege[]
+
+  @@map("user_types")
+}
+
+model User {
+  id                    String         @id @default(uuid())
+  username              String
+  email                 String         @unique
+  password              String
+  statusCode            String         @default("PENDING") @map("status_code")
+  userTypeId            Int            @map("user_type_id")
+  createdAt             DateTime       @default(now()) @map("created_at")
+  updatedAt             DateTime       @updatedAt @map("updated_at")
+
+  userType              UserType       @relation(fields: [userTypeId], references: [id])
+  authTokens            AuthToken[]
+
+  @@map("users")
+}
+
+model Action {
+  id                    String      @id @default(uuid())
+  code                  String      @unique @map("action_code")
+  name                  String      @map("action_name")
+  statusCode            String      @default("ACTIVE") @map("status_code")
+  createdAt             DateTime    @default(now()) @map("created_at")
+  updatedAt             DateTime    @updatedAt @map("updated_at")
+
+  privileges            Privilege[]
+  menuActions           MenuAction[]
+
+  @@map("actions")
+}
+
+model Menu {
+  id                    String       @id @default(uuid())
+  code                  String       @unique @map("menu_code")
+  name                  String       @map("menu_name")
+  parentCode            String?      @map("parent_code")
+  icon                  String?
+  slug                  String?
+  order                 Int          @default(0) @map("menu_order")
+  isGroup               Boolean      @default(false) @map("is_group")
+  statusCode            String       @default("ACTIVE") @map("status_code")
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
+
+  actions               MenuAction[]
+  privileges            Privilege[]
+
+  @@map("menus")
+}
+
+model MenuAction {
+  id                    String   @id @default(uuid())
+  menuCode              String   @map("menu_code")
+  actionCode            String   @map("action_code")
+  statusCode            String   @default("ACTIVE") @map("status_code")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  menu                  Menu     @relation(fields: [menuCode], references: [code], onDelete: Cascade)
+  action                Action   @relation(fields: [actionCode], references: [code], onDelete: Cascade)
+
+  @@unique([menuCode, actionCode])
+  @@map("menu_actions")
+}
+
+model Privilege {
+  id                    String   @id @default(uuid())
+  code                  String   @unique @map("privilege_code")
+  userTypeId            Int      @map("user_type_id")
+  menuCode              String   @map("menu_code")
+  actionCode            String   @map("action_code")
+  statusCode            String   @default("ACTIVE") @map("status_code")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  userType              UserType @relation(fields: [userTypeId], references: [id], onDelete: Cascade)
+  menu                  Menu     @relation(fields: [menuCode], references: [code], onDelete: Cascade)
+  action                Action   @relation(fields: [actionCode], references: [code], onDelete: Cascade)
+
+  @@unique([userTypeId, menuCode, actionCode])
+  @@map("privileges")
+}
+
+model AuthToken {
+  id                    String   @id @default(uuid())
+  email                 String
+  token                 String   @unique
+  action                String
+  expiresAt             DateTime @map("expires_at")
+  usedAt                DateTime? @map("used_at")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  user                  User?    @relation(fields: [email], references: [email], onDelete: Cascade)
+
+  @@map("auth_tokens")
+}
+
+model Setting {
+  key                   String   @id
+  value                 String
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
