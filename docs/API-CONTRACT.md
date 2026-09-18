@@ -29,7 +29,9 @@ Spesifikasi (harus identik di kedua sisi):
 ## 1. Auth
 
 ### POST `/auth/login`
-Body: `{ "email": "", "user_type_id": "", "password": "" }`
+Body: `{ "email": "", "password": "" }`
+
+> Jenis user **tidak lagi dikirim** saat login. Backend mengenali user type dari kombinasi email + password yang cocok (email unik).
 
 Response `200` + header `x-perm-version` + set cookie session:
 ```json
@@ -74,7 +76,7 @@ Hapus cookie session.
 Semua body bertanda 🔒 dikirim sebagai `{ "data": "<encrypted>" }`.
 
 ### POST `/user/forgot-password`
-Body: `{ "user_type": "<user_type_id>", "email": "", "submitted_by_admin": false }`
+Body: `{ "email": "", "submitted_by_admin": false }`
 Response: `{ "status": 0, "message": "..." }` (sukses). Email berisi link `/reset/:token` dengan token = 🔒 `{ "email": "", "token": "" }`.
 
 ### POST `/user/reset-password`
@@ -168,4 +170,28 @@ Response: `{ "status": 0, "perm_version": "<version>" }` — **wajib bump `perm_
 
 ## 6. Action Codes (seed wajib)
 
-Kode aksi standar yang direferensikan `src/lib/action-codes.ts` (`ACTION_CODES`): `VIEW`, `ADD`, `EDIT`, `DELETE`, `APPROVE`, `REJECT`, `RESET`, `LIST`, `ACTIVE_TOGGLE`, `DOWNLOAD`, `CANCEL`, dst. Backend wajib menyediakan action-action ini saat seed; `code` boleh berbeda asalkan konsisten antara menu.actions dan privilege.
+Frontend me-hardcode kode aksi di `src/lib/action-codes.ts` (`ACTION_CODES`) dan memakainya untuk `use-menu-access`. Artinya **backend wajib menyediakan action dengan `action_code` yang persis sama** (bukan sekadar konsisten), karena `menu.actions[].code` dari `/auth/login` & `/auth/me` dibandingkan langsung dengan nilai-nilai ini:
+
+| Key | `action_code` |
+|---|---|
+| `VIEW` | `ACT1780387013007` |
+| `ADD` | `ACT1779689449003` |
+| `EDIT` | `ACT1780387019008` |
+| `DELETE` | `ACT1780387028009` |
+| `APPROVE` | `ACT1780458369010` |
+| `REJECT` | `ACT1781146783014` |
+| `RESET` | `ACT1780978958011` |
+| `LIST` | `ACT1781056372012` |
+| `ACTIVE_TOGGLE` | `ACT1781057065013` |
+| `DOWNLOAD` | `ACT1782444061019` |
+| `EDIT_ROOM` | `ACT1781925870016` |
+| `DELETE_ROOM` | `ACT1781925881017` |
+| `UPLOAD_HEALTH` | `ACT1782714618026` |
+| `UPLOAD_PAYMENT` | `ACT1782714499023` |
+| `UPLOAD_QUARANTINE` | `ACT1782714469022` |
+| `VERIF_PAYMENT` | `ACT1782714312020` |
+| `VERIF_QR` | `ACT1782714532024` |
+| `VERIF_QUARANTINE` | `ACT1782714363021` |
+| `CANCEL` | `ACT1782714708027` |
+
+Seed default (`express/prisma/seed.ts`) sudah memakai kode-kode di atas.

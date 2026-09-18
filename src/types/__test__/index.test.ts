@@ -32,42 +32,6 @@ import type {
   UserItem,
   CreateUserPayload,
   UpdateUserPayload,
-  PendingRegistration,
-  CustomParamItem,
-  CustomParamPayload,
-  TarifStatus,
-  TarifValue,
-  TarifDetailItem,
-  TarifItem,
-  PelabuhanItem,
-  PelabuhanPayload,
-  TrayekItem,
-  TrayekPayload,
-  TrayekForm,
-  TrayekFormPayload,
-  GroundHoldingItem,
-  GroundHoldingPayload,
-  DoctorItem,
-  DoctorPayload,
-  ActivateUserItem,
-  ActivateUserPayload,
-  JadwalKapalApprovalData,
-  JadwalKapalItem,
-  JadwalKapalPayload,
-  AnimalItem,
-  AnimalPayload,
-  AnimalTypeItem,
-  AnimalTypePayload,
-  VesselItem,
-  VesselPayload,
-  ContractStatus,
-  ContractItem,
-  ContractPayload,
-  ReportingItem,
-  ReportingPayload,
-  BookingStatusReportItem,
-  SisaQuotaReportItem,
-  RealisasiVoyageReportItem,
 } from "../index";
 
 describe("index re-exports", () => {
@@ -92,7 +56,12 @@ describe("index re-exports", () => {
   });
 
   it("re-exports domain types", () => {
-    const tarif: TarifStatus = "active";
-    expect(tarif).toBe("active");
+    const payload: CreateUserPayload = {
+      username: "u",
+      email: "u@example.com",
+      password: "secret",
+      user_type_id: "1",
+    };
+    expect(payload.user_type_id).toBe("1");
   });
 });

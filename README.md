@@ -86,7 +86,7 @@ Setiap modul memisahkan tanggung jawab:
 ## Alur Auth
 
 1. `AppBootstrap` (di `App.tsx`) memanggil `GET /auth/me` saat app dimuat untuk memulihkan sesi dari cookie. Bila gagal → state auth dibersihkan.
-2. `POST /auth/login` mengembalikan data user + `menus` + header `x-perm-version`. Data disimpan di `auth-store` & `privilege-store`.
+2. `POST /auth/login` cukup mengirim `email` + `password` (jenis user dikenali dari akun yang cocok). Response berisi data user + `menus` + header `x-perm-version`. Data disimpan di `auth-store` & `privilege-store`.
 3. Axios interceptor (`lib/axios/client.ts`):
    - `401` → otomatis `GET /auth/refresh`, request yang gagal diantrikan lalu di-retry; bila refresh gagal → logout.
    - Header `x-perm-version` berubah → privilege di-refresh otomatis.
