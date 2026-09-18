@@ -1,50 +1,113 @@
-# 🗂️ Boilerplate Repository
+# React Vite Boilerplate
 
-Repositori penyimpanan boilerplate dengan **konsep git branch**: setiap branch adalah satu varian boilerplate yang siap dipakai (checkout branch → copy/salim → mulai develop).
+Boilerplate frontend internal app: **React 19 + Vite 7 + TypeScript + Tailwind CSS 4 + shadcn/ui (Base UI)**.
 
-## 📌 Daftar Branch
+Berisi fondasi wajib untuk aplikasi internal tim: **auth lengkap** (login, logout, refresh token cookie, reset & aktivasi password) dan **RBAC** (user, role, action, menu, privilege) — plus seluruh global component UI dan halaman `dungeon` sebagai playground komponen.
 
-| Branch | Stack | Status | Keterangan |
-|---|---|---|---|
-| `main` | — | ✅ | Dokumentasi konsep repo (branch ini) |
-| `react-vite` | React 19 + Vite 7 + TS + Tailwind 4 + shadcn (Base UI) | ✅ | Frontend internal app: auth + RBAC + global components |
-| `express` | Express 5 + TS + Prisma + PostgreSQL | ✅ | Backend API: modul auth lengkap (login, refresh token cookie, RBAC, reset & activation password) |
+> Bagian dari repo [boilerplate](../README.md). Backend pasangannya ada di branch **`express`**. Kontrak API: [`docs/API-CONTRACT.md`](./docs/API-CONTRACT.md).
 
-> Kedua boilerplate **saling terkait**: `react-vite` dirancang untuk berintegrasi langsung dengan API contract yang diimplementasikan oleh `express` (lihat `docs/API-CONTRACT.md` di masing-masing branch).
+## Tech Stack
 
-## 🧭 Cara Pakai
+| Kategori | Teknologi |
+|---|---|
+| Framework | React 19, Vite 7, TypeScript 5 |
+| Styling | Tailwind CSS 4, tw-animate-css |
+| UI Kit | shadcn/ui (`base-nova`) di atas Base UI, Phosphor Icons |
+| Routing | React Router DOM 7 |
+| Data | TanStack React Query 5, Axios |
+| State | Zustand 5 |
+| Validasi | Zod 4 |
+| Testing | Jest 30 + Testing Library (ts-jest, ESM) |
+| Utilitas | Sonner (toast), date-fns, crypto-js, class-variance-authority |
+
+## Menjalankan
 
 ```bash
-# 1. Ambil boilerplate frontend
-git clone <repo-url> my-app
-cd my-app
-git checkout react-vite
-
-# 2. Atau ambil boilerplate backend
-git clone <repo-url> my-api
-cd my-api
-git checkout express
+cp .env.example .env.local      # sesuaikan VITE_APP_KEY agar sama dengan backend
+npm install
+npm run dev                     # http://localhost:5173
 ```
 
-Setelah checkout, hapus folder `.git` lalu `git init` ulang untuk project baru, atau push langsung ke remote baru.
+Backend Express (branch `express`) berjalan di `http://localhost:4000`. Vite mem-proxy `/api` → backend (lihat `vite.config.ts`).
 
-## 🏛️ Prinsip
+### Scripts
 
-1. **`main` tidak berisi kode** — hanya dokumentasi konsep.
-2. **Satu branch = satu tech stack boilerplate.** Branch baru (mis. `next-js`, `nestjs`) dibuat dari `main` dan harus mengimplementasikan **API contract modul auth** yang sama agar tetap kompatibel dengan frontend boilerplate mana pun.
-3. **Modul wajib** untuk semua boilerplate: auth (login/logout/refresh/me), RBAC (user, role/user-type, action, menu, privilege), reset & activation password.
-4. **Jangan mengubah branch boilerplate setelah dipakai project lain** — perbaikan dilakukan di branch boilerplate-nya, project turunan melakukan cherry-pick/rebase sesuai kebutuhan.
+| Perintah | Fungsi |
+|---|---|
+| `npm run dev` | Dev server + HMR |
+| `npm run build` | Build production ke `dist/` |
+| `npm run preview` | Preview hasil build |
+| `npm run lint` | ESLint |
+| `npm test` | Jest (bail, silent) |
+| `npm run test:watch` | Jest watch |
+| `npm run test:cov` | Coverage (untuk SonarQube) |
 
-## 🔗 Relasi Frontend ↔ Backend
+## Struktur
 
 ```
-react-vite (SPA)  ──►  /api (vite dev proxy)  ──►  express (API)
-      │                                                    │
-      └──────────── cookie-based auth (httpOnly refresh) ──┘
+src/
+├── app/                     # Halaman per-modul (pola page/handler/hook/schemas/types)
+│   ├── login/               # Login + lupa password (+ captcha)
+│   ├── reset/               # Reset password via token dari email
+│   ├── activation/          # Aktivasi akun via token dari email
+│   └── (protected)/         # Route wajib login
+│       ├── dashboard/
+│       ├── user/            # CRUD user
+│       ├── role/            # CRUD role / user-type
+│       ├── action/          # CRUD action
+│       ├── menu/            # CRUD menu
+│       ├── privilege/       # Matrix privilege per role
+│       └── profile/         # Profil + ganti password
+├── components/
+│   ├── ui/                  # Global UI kit (button, sheet, table, map, dll.)
+│   ├── providers/           # QueryProvider
+│   ├── app-layout.tsx, app-sidebar.tsx, dashboard-shell.tsx, dll.
+├── hooks/                   # Hook global (captcha, menu-access, user-type-options, dll.)
+├── layouts/protected-layout.tsx
+├── lib/                     # axios client, config, crypto, notify, validation, utils
+├── pages/                   # dungeon-page (playground), not-found-page
+├── store/                   # auth-store, privilege-store (zustand)
+└── types/                   # api, auth, menu, privilege, domain
 ```
 
-- Auth berbasis **httpOnly cookie** (refresh token) + auto-refresh via axios interceptor dengan failed-request queue.
-- Enkripsi payload sensitif (reset/activation) memakai **AES-256-CBC** dengan key yang sama (`VITE_APP_KEY` / `APP_KEY`) — key harus identik di kedua sisi.
-- Header `x-perm-version` dipakai frontend untuk deteksi perubahan privilege secara real-time.
+### Pola per-modul
 
-Detail lengkap endpoint: baca `docs/API-CONTRACT.md` pada branch `react-vite` atau `express`.
+Setiap modul memisahkan tanggung jawab:
+
+| File | Peran |
+|---|---|
+| `page.tsx` | View/UI halaman |
+| `handler.tsx` | Lapisan pemanggilan API (axios) |
+| `hook.tsx` | Hook React Query (query/mutation + invalidasi cache) |
+| `schemas.ts` | Skema validasi Zod |
+| `types.ts` | Tipe modul |
+| `component(s)/` | Komponen lokal modul |
+
+## Alur Auth
+
+1. `AppBootstrap` (di `App.tsx`) memanggil `GET /auth/me` saat app dimuat untuk memulihkan sesi dari cookie. Bila gagal → state auth dibersihkan.
+2. `POST /auth/login` mengembalikan data user + `menus` + header `x-perm-version`. Data disimpan di `auth-store` & `privilege-store`.
+3. Axios interceptor (`lib/axios/client.ts`):
+   - `401` → otomatis `GET /auth/refresh`, request yang gagal diantrikan lalu di-retry; bila refresh gagal → logout.
+   - Header `x-perm-version` berubah → privilege di-refresh otomatis.
+4. `ProtectedLayout` menjaga route: wajib `isAuthenticated`, privilege siap, dan user tersedia; jika tidak → redirect `/login`.
+5. `PublicLayout` mengarahkan user yang sudah login ke `/dashboard`.
+
+## RBAC
+
+- **Menu** membentuk sidebar (`app-sidebar`) via `privilege-store`; ikon dipetakan di `lib/icon-map.ts`.
+- **Action** per menu dipakai `useMenuAccess("/path")` untuk menentukan `canView/canAdd/canEdit/canDelete/...`.
+- Halaman yang tidak punya akses menampilkan `<ForbiddenView />`.
+- Matrix role × menu × action dikelola di halaman **Privilege**.
+
+## Dungeon
+
+`/dungeon` (publik) dan `/protected/dungeon` (setelah login) adalah halaman playground seluruh komponen UI — referensi cepat saat membangun halaman baru.
+
+## Enkripsi
+
+`lib/crypto.ts` (AES-256-CBC, IV di-prepend, base64url) dipakai untuk payload sensitif reset/aktivasi. **`VITE_APP_KEY` harus identik dengan `APP_KEY` di backend Express.** Lihat [`docs/API-CONTRACT.md`](./docs/API-CONTRACT.md) §Enkripsi.
+
+## Integrasi Boilerplate Lain
+
+Jika membuat boilerplate frontend baru (mis. Next.js), implementasikan halaman/flow di `docs/API-CONTRACT.md` agar langsung kompatibel dengan backend manapun yang mengikuti kontrak yang sama. Sebaliknya, backend baru wajib mengimplementasikan kontrak ini agar kompatibel dengan frontend ini.

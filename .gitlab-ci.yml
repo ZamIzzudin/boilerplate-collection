@@ -1,0 +1,59 @@
+# tahapan
+stages:
+  - sonar_scan
+  - build_image_development
+  - deploy_development
+
+.sonar_scan_script: &sonar_scan_script
+  - export PATH=$PATH:/opt/sonar-scanner/bin
+  - source $SONAR_ENV
+  - npm ci
+  - npm run test:cov
+  - sonar-scanner -Dsonar.projectKey=$SONAR_KEY -Dsonar.host.url=$SONAR_HOST -Dsonar.token=$SONAR_TOKEN
+
+.build_image_script: &build_image_script
+  - cp $ENV_DEV $CI_PROJECT_DIR/.env-dev
+  - cp $CONFIG $CI_PROJECT_DIR/nginx.conf
+  - docker build -f Dockerfile -t $DOCKER_REGISTRY/$PROJECT_NAME:$CI_COMMIT_SHORT_SHA .
+  - docker push $DOCKER_REGISTRY/$PROJECT_NAME:$CI_COMMIT_SHORT_SHA
+
+sonarqube_scan:
+  stage: sonar_scan
+  variables:
+    GIT_DEPTH: 0
+  script:
+    - *sonar_scan_script
+  only:
+    - develop
+  when: manual
+  tags:
+    - runner-sonar-scanner
+
+# build image on server dev
+build_image_development:
+  stage: build_image_development
+  script:
+    - *build_image_script
+  only:
+    - develop
+  when: manual
+  tags:
+    - runner-sims-builder
+
+# deploy image to server dev
+deploy_development:
+  stage: deploy_development
+  script:
+    - cp $ENV_DEV $CI_PROJECT_DIR/.env-dev
+    - sed -i -e "s|DOCKER_REGISTRY|$DOCKER_REGISTRY|g" docker-compose.yaml
+    - sed -i -e 's/PROJECT_NAME/'$PROJECT_NAME'/g' docker-compose.yaml
+    - sed -i -e 's/TAG/'$CI_COMMIT_SHORT_SHA'/g' docker-compose.yaml
+    - sed -i -e 's/PROJECT_PORT/'$PROJECT_PORT'/g' docker-compose.yaml
+    - docker stack deploy $PROJECT_NAME -c docker-compose.yaml
+    - if [[ ! -f "/etc/nginx/sites-available/"$PROJECT_DOMAIN_NAME ]]; then cd "/etc/nginx/sites-available/" && cp reverse-proxy.template $PROJECT_DOMAIN_NAME && sed -i -e 's/CONFDOMAIN/'$PROJECT_DOMAIN_NAME'/g' $PROJECT_DOMAIN_NAME && sed -i -e 's/CONFPORT/'$PROJECT_PORT'/g' $PROJECT_DOMAIN_NAME && ln -s "/etc/nginx/sites-available/"$PROJECT_DOMAIN_NAME "/etc/nginx/sites-enabled/" ; else cd "/etc/nginx/sites-available/" && sed -i -e 's/CONFDOMAIN/'$PROJECT_DOMAIN_NAME'/g' $PROJECT_DOMAIN_NAME && sed -i -e 's/CONFPORT/'$PROJECT_PORT'/g' $PROJECT_DOMAIN_NAME; fi
+    - rm $CI_PROJECT_DIR/.env-dev
+  only:
+    - develop
+  when: manual
+  tags:
+    - runner-1-sims-psm
