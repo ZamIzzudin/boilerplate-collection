@@ -1,8 +1,6 @@
 import { AppError } from "@/common/errors";
-import { env } from "@/config/env";
 import { comparePassword, hashPassword, isStrongPassword } from "@/lib/password";
 import { generateToken } from "@/lib/id";
-import { sendMail } from "@/lib/mailer";
 import { encrypt } from "@/lib/crypto";
 import { prisma } from "@/lib/prisma";
 import { signAccessToken, signRefreshToken, verifyToken } from "@/lib/jwt";
