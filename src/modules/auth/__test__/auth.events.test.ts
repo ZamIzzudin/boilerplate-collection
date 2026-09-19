@@ -39,9 +39,7 @@ jest.mock("@/lib/prisma", () => {
 
 type SseMessage = { event?: string; data?: string };
 
-const parseMessages = (
-  chunks: string[],
-): { messages: SseMessage[]; onChunk: (chunk: string) => void } => {
+const parseMessages = (): { messages: SseMessage[]; onChunk: (chunk: string) => void } => {
   const messages: SseMessage[] = [];
   let buffer = "";
 
@@ -143,7 +141,7 @@ describe("GET /auth/events (permission-version SSE)", () => {
       expect(res.statusCode).toBe(200);
       expect(res.headers["content-type"]).toContain("text/event-stream");
 
-      const { messages, onChunk } = parseMessages([]);
+      const { messages, onChunk } = parseMessages();
       res.setEncoding("utf8");
       res.on("data", onChunk);
 
