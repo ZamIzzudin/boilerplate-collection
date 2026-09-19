@@ -22,7 +22,7 @@ const processQueue = (error: unknown) => {
   failedQueue = [];
 };
 
-const publicPaths = ["/login", "/", "/reset", "/activation"];
+const publicPaths = ["/login", "/", "/activation", "/dungeon"];
 
 const handleLogout = () => {
   useAuthStore.getState().clearAuth();

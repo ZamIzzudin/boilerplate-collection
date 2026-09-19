@@ -71,11 +71,11 @@ const mockNavigate = useNavigate as jest.Mock;
 const mockUseParams = useParams as jest.Mock;
 
 const defaultProps = {
-  title: "Reset Password",
+  title: "Aktivasi Akun",
   buttonText: "Simpan",
   alertTitle: "Berhasil",
-  alertDescription: "Password berhasil diubah",
-  action: "reset_password",
+  alertDescription: "Password berhasil dibuat",
+  action: "activation",
   onSubmit: jest.fn().mockResolvedValue(undefined),
 };
 
@@ -84,7 +84,7 @@ function renderForm(overrides: Partial<typeof defaultProps> = {}) {
   mockUseParams.mockReturnValue({ token: "encrypted-token" });
 
   return render(
-    <MemoryRouter initialEntries={["/reset-password/encrypted-token"]}>
+    <MemoryRouter initialEntries={["/activation/encrypted-token"]}>
       <TokenPasswordForm {...defaultProps} {...overrides} />
     </MemoryRouter>,
   );
@@ -95,7 +95,7 @@ describe("TokenPasswordForm", () => {
 
   it("renders title", () => {
     renderForm();
-    expect(screen.getByText("Reset Password")).toBeInTheDocument();
+    expect(screen.getByText("Aktivasi Akun")).toBeInTheDocument();
   });
 
   it("renders masked email", () => {

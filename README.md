@@ -2,7 +2,7 @@
 
 Boilerplate frontend internal app: **React 19 + Vite 7 + TypeScript + Tailwind CSS 4 + shadcn/ui (Base UI)**.
 
-Berisi fondasi wajib untuk aplikasi internal tim: **auth lengkap** (login, logout, refresh token cookie, reset & aktivasi password) dan **RBAC** (user, role, action, menu, privilege) — plus seluruh global component UI dan halaman `dungeon` sebagai playground komponen.
+Berisi fondasi wajib untuk aplikasi internal tim: **auth lengkap** (login, logout, refresh token cookie, ganti password, aktivasi akun) dan **RBAC** (user, role, action, menu, privilege) — plus seluruh global component UI dan halaman `dungeon` sebagai playground komponen.
 
 > Bagian dari repo [boilerplate](../README.md). Backend pasangannya ada di branch **`express`**. Kontrak API: [`docs/API-CONTRACT.md`](./docs/API-CONTRACT.md).
 
@@ -47,8 +47,7 @@ Backend Express (branch `express`) berjalan di `http://localhost:4000`. Vite mem
 ```
 src/
 ├── app/                     # Halaman per-modul (pola page/handler/hook/schemas/types)
-│   ├── login/               # Login + lupa password (+ captcha)
-│   ├── reset/               # Reset password via token dari email
+│   ├── login/               # Login (+ captcha)
 │   ├── activation/          # Aktivasi akun via token dari email
 │   └── (protected)/         # Route wajib login
 │       ├── dashboard/
@@ -103,11 +102,11 @@ Setiap modul memisahkan tanggung jawab:
 
 ## Dungeon
 
-`/dungeon` (publik) dan `/protected/dungeon` (setelah login) adalah halaman playground seluruh komponen UI — referensi cepat saat membangun halaman baru.
+`/dungeon` adalah halaman playground seluruh komponen UI — referensi cepat saat membangun halaman baru. Route ini **publik**: bisa diakses tanpa login maupun setelah login (di luar `PublicLayout`/`ProtectedLayout`).
 
 ## Enkripsi
 
-`lib/crypto.ts` (AES-256-CBC, IV di-prepend, base64url) dipakai untuk payload sensitif reset/aktivasi. **`VITE_APP_KEY` harus identik dengan `APP_KEY` di backend Express.** Lihat [`docs/API-CONTRACT.md`](./docs/API-CONTRACT.md) §Enkripsi.
+`lib/crypto.ts` (AES-256-CBC, IV di-prepend, base64url) dipakai untuk payload sensitif aktivasi/validasi token. **`VITE_APP_KEY` harus identik dengan `APP_KEY` di backend Express.** Lihat [`docs/API-CONTRACT.md`](./docs/API-CONTRACT.md) §Enkripsi.
 
 ## Integrasi Boilerplate Lain
 

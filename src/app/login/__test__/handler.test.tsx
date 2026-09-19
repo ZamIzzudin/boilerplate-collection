@@ -1,6 +1,5 @@
 import { apiNewClient } from "@/lib/axios/client";
 import { handler } from "../handler";
-
 jest.mock("@/lib/axios/client", () => ({
   apiNewClient: {
     post: jest.fn(),
@@ -56,23 +55,5 @@ describe("handler.login", () => {
     });
 
     expect(result.perm_version).toBeUndefined();
-  });
-});
-
-describe("handler.forgotPassword", () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  it("posts to /user/forgot-password with email and submitted_by_admin", async () => {
-    mockedPost.mockResolvedValue({ data: { status: 0 } });
-
-    const result = await handler.forgotPassword({
-      email: "user@test.com",
-    });
-
-    expect(mockedPost).toHaveBeenCalledWith("/user/forgot-password", {
-      email: "user@test.com",
-      submitted_by_admin: false,
-    });
-    expect(result).toEqual({ status: 0 });
   });
 });

@@ -26,10 +26,9 @@ jest.mock("@/components/ui/form-field", () => ({
 }));
 
 jest.mock("@/app/login/components/shared/auth-fields", () => ({
-  AuthFields: ({ showPasswordField, showForgotPasswordButton, fieldErrors }: any) => (
+  AuthFields: ({ showPasswordField, fieldErrors }: any) => (
     <div data-testid="auth-fields">
       {showPasswordField && <input data-testid="password-field" />}
-      {showForgotPasswordButton && <button data-testid="forgot-btn">Lupa Password</button>}
       {fieldErrors?.email && <span data-testid="email-error">{fieldErrors.email}</span>}
     </div>
   ),
@@ -45,9 +44,6 @@ const defaultProps = {
   onSubmit: jest.fn(),
   gen: jest.fn(),
   validate: jest.fn(() => true),
-  formType: "login" as const,
-  setFormType: jest.fn(),
-  resetForm: jest.fn(),
   formErrors: {},
 };
 

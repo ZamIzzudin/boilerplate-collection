@@ -105,11 +105,5 @@ export type UserHandler<T> = {
   toggleStatus: (payload: UserStatusPayload) => Promise<any>;
   verify: (id: string) => Promise<any>;
   reject: (id: string, reason: string) => Promise<any>;
-  resetPassword: (payload: ForgotPasswordPayload) => Promise<any>;
   getFile: (params: GetFileParams) => Promise<{ url: string | null; isImage: boolean }>;
-};
-
-export type ForgotPasswordPayload = {
-  email: string;
-  userTypeId: string;
 };

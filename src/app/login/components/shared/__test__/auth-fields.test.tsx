@@ -48,23 +48,6 @@ describe("AuthFields", () => {
     expect(screen.getByTestId("password")).toBeInTheDocument();
   });
 
-  it("renders forgot password button when showForgotPasswordButton is true", () => {
-    render(
-      <AuthFields
-        {...defaultProps}
-        showPasswordField={true}
-        showForgotPasswordButton={true}
-        setFormType={jest.fn()}
-      />,
-    );
-    expect(screen.getByText("Atur ulang disini")).toBeInTheDocument();
-  });
-
-  it("does not render forgot password button by default", () => {
-    render(<AuthFields {...defaultProps} showPasswordField={true} />);
-    expect(screen.queryByText("Atur ulang disini")).not.toBeInTheDocument();
-  });
-
   it("displays field errors", () => {
     render(
       <AuthFields

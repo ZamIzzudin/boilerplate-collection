@@ -31,7 +31,6 @@ export const useMenuAccess = (menuKey: string) => {
       canAdd: codes.has(ACTION_CODES.ADD),
       canEdit: codes.has(ACTION_CODES.EDIT),
       canDelete: codes.has(ACTION_CODES.DELETE),
-      canResetPassword: codes.has(ACTION_CODES.RESET),
       canActive: codes.has(ACTION_CODES.ACTIVE_TOGGLE),
       canDownload: codes.has(ACTION_CODES.DOWNLOAD),
     };

@@ -1,4 +1,4 @@
-import { loginSchema, forgotPasswordSchema } from "../schemas";
+import { loginSchema } from "../schemas";
 
 describe("loginSchema", () => {
   it("valid email and password", () => {
@@ -31,21 +31,5 @@ describe("loginSchema", () => {
       password: "pass",
     });
     expect(result.success).toBe(true);
-  });
-});
-
-describe("forgotPasswordSchema", () => {
-  it("valid data", () => {
-    const result = forgotPasswordSchema.safeParse({
-      email: "a@b.com",
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it("invalid email", () => {
-    const result = forgotPasswordSchema.safeParse({
-      email: "bad",
-    });
-    expect(result.success).toBe(false);
   });
 });

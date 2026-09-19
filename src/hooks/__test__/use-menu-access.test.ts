@@ -40,7 +40,6 @@ describe("useMenuAccess", () => {
     expect(result.current.canAdd).toBe(false);
     expect(result.current.canEdit).toBe(false);
     expect(result.current.canDelete).toBe(false);
-    expect(result.current.canResetPassword).toBe(false);
     expect(result.current.canActive).toBe(false);
     expect(result.current.canDownload).toBe(false);
   });
@@ -56,7 +55,6 @@ describe("useMenuAccess", () => {
     expect(result.current.canAdd).toBe(true);
     expect(result.current.canEdit).toBe(true);
     expect(result.current.canDelete).toBe(true);
-    expect(result.current.canResetPassword).toBe(true);
     expect(result.current.canActive).toBe(true);
     expect(result.current.canDownload).toBe(true);
   });
@@ -110,7 +108,6 @@ describe("useMenuAccess", () => {
       ["canAdd", ACTION_CODES.ADD],
       ["canEdit", ACTION_CODES.EDIT],
       ["canDelete", ACTION_CODES.DELETE],
-      ["canResetPassword", ACTION_CODES.RESET],
       ["canActive", ACTION_CODES.ACTIVE_TOGGLE],
       ["canDownload", ACTION_CODES.DOWNLOAD],
     ];

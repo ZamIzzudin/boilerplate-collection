@@ -8,7 +8,6 @@ import { usePrivilegeStore } from "@/store/privilege-store";
 import { ProtectedLayout } from "@/layouts/protected-layout";
 
 import LoginPage from "@/app/login/page";
-import ResetPasswordPage from "@/app/reset/page";
 import ActivationPage from "@/app/activation/page";
 import DashboardPage from "@/app/(protected)/dashboard/page";
 import UserPage from "@/app/(protected)/user/page";
@@ -90,12 +89,13 @@ export default function App() {
     <QueryProvider>
       <AppBootstrap>
         <Routes>
+          {/* Playground komponen — selalu bisa diakses, login maupun tidak. */}
+          <Route path="/dungeon" element={<DungeonPage />} />
+
           <Route element={<PublicLayout />}>
             <Route path="/" element={<LoginPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/reset/:token" element={<ResetPasswordPage />} />
             <Route path="/activation/:token" element={<ActivationPage />} />
-            <Route path="/dungeon" element={<DungeonPage />} />
           </Route>
 
           <Route element={<ProtectedLayout />}>
@@ -106,7 +106,6 @@ export default function App() {
             <Route path="/action" element={<ActionPage />} />
             <Route path="/menu" element={<MenuPage />} />
             <Route path="/privilege" element={<PrivilegePage />} />
-            <Route path="/protected/dungeon" element={<DungeonPage />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />

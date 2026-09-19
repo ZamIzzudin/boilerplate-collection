@@ -3,7 +3,3 @@ export type {
   LoginPayload,
   LoginResponse,
 } from "@/types";
-
-export type ForgotPasswordPayload = {
-  email: string;
-};

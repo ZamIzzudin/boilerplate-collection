@@ -89,23 +89,18 @@ Hapus cookie session.
 { "data": { "id": "uuid", "username": "...", "user_email": "...", "user_type_user_type_id": "1", "user_type_name": "..." } }
 ```
 
-## 2. User Lifecycle (password & aktivasi)
+## 2. User Lifecycle (aktivasi & ganti password)
 
 Semua body bertanda 🔒 dikirim sebagai `{ "data": "<encrypted>" }`.
 
-### POST `/user/forgot-password`
-Body: `{ "email": "", "submitted_by_admin": false }`
-Response: `{ "status": 0, "message": "..." }` (sukses). Email berisi link `/reset/:token` dengan token = 🔒 `{ "email": "", "token": "" }`.
-
-### POST `/user/reset-password`
-Body 🔒: `{ "email": "", "token": "", "new_password": "", "confirm_password": "" }`
+> Fitur **lupa/reset password (recovery via email) dihapus dari boilerplate ini**. Pengelolaan password yang tersisa: aktivasi akun baru oleh admin dan ganti password sendiri di halaman profil.
 
 ### POST `/user/activation`
 Body 🔒: `{ "email": "", "token": "", "new_password": "", "confirm_password": "" }`
 Email berisi link `/activation/:token` dengan token = 🔒 `{ "email": "", "token": "" }`.
 
 ### POST `/user/valid-token`
-Body 🔒: `{ "email": "", "token": "", "action": "activation" | "reset" }`
+Body 🔒: `{ "email": "", "token": "", "action": "activation" }`
 Response valid: `{ "status": 0 }`; invalid/expired: `4xx`.
 
 ### POST `/user/check-password` (authed)

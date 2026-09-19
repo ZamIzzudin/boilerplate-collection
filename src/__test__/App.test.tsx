@@ -77,11 +77,6 @@ jest.mock("@/pages/not-found-page", () => ({
   default: () => <div data-testid="not-found" />,
 }));
 
-jest.mock("@/app/reset/page", () => ({
-  __esModule: true,
-  default: () => <div data-testid="reset-password" />,
-}));
-
 jest.mock("@/app/activation/page", () => ({
   __esModule: true,
   default: () => <div data-testid="activation" />,
@@ -165,6 +160,47 @@ describe("App", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("not-found")).toBeInTheDocument();
+    });
+  });
+
+  it("renders the dungeon playground without login on /dungeon", async () => {
+    const { apiNewClient } = require("@/lib/axios/client");
+    apiNewClient.get.mockResolvedValue({ data: {} });
+
+    render(
+      <MemoryRouter initialEntries={["/dungeon"]}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("dungeon-page")).toBeInTheDocument();
+    });
+  });
+
+  it("keeps /dungeon reachable even after login", async () => {
+    const { apiNewClient } = require("@/lib/axios/client");
+    apiNewClient.get.mockResolvedValue({
+      data: {
+        data: {
+          id: "1",
+          user_email: "admin@boilerplate.local",
+          user_type_user_type_id: "1",
+          user_type_name: "Superadmin",
+        },
+        menus: [],
+      },
+      headers: {},
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/dungeon"]}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("dungeon-page")).toBeInTheDocument();
     });
   });
 });

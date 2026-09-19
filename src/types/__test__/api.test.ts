@@ -35,7 +35,6 @@ describe("api types", () => {
       canDelete: false,
       canActive: true,
       canDownload: false,
-      canResetPassword: true,
     };
     expect(access.canEdit).toBe(true);
     expect(access.canViewDetail).toBe(true);

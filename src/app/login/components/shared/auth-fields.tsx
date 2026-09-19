@@ -17,10 +17,7 @@ interface AuthFieldsProps {
     }>
   >;
   fieldErrors: Record<string, string>;
-  setFormType?: Dispatch<SetStateAction<"forgot-password" | "login">>;
-  resetForm?: () => void;
   showPasswordField?: boolean;
-  showForgotPasswordButton?: boolean;
   minLength?: number;
   handleFieldChange: (field: any, value: any) => void;
   handleBlur: (field: any, value: unknown) => void;
@@ -30,10 +27,7 @@ export function AuthFields({
   form,
   setForm,
   fieldErrors,
-  setFormType,
-  resetForm,
   showPasswordField = false,
-  showForgotPasswordButton = false,
   minLength,
   handleFieldChange,
   handleBlur,
@@ -55,52 +49,33 @@ export function AuthFields({
       />
 
       {showPasswordField && (
-        <div
-          className={showForgotPasswordButton ? "space-y-2 mb-4" : undefined}
-        >
-          <FormField
-            id="password"
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            value={form.password}
-            onChange={(e) => handleFieldChange("password", e.target.value)}
-            onBlur={() => handleBlur("password", form.password)}
-            required
-            placeholder="Masukkan kata sandi"
-            minLength={minLength}
-            error={fieldErrors.password}
-            addonEnd={
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="size-7 text-brand-muted"
-                onClick={() => setShowPassword((v) => !v)}
-              >
-                {showPassword ? (
-                  <EyeSlashIcon className="size-4" />
-                ) : (
-                  <EyeIcon className="size-4" />
-                )}
-              </Button>
-            }
-          />
-          {showForgotPasswordButton && setFormType && (
-            <div className="space-x-1">
-              <span className="text-sm">Lupa kata sandi?</span>
-              <button
-                className="font-semibold text-sm text-primary underline cursor-pointer"
-                onClick={() => {
-                  setFormType("forgot-password");
-                  resetForm?.();
-                }}
-                type="button"
-              >
-                Atur ulang disini
-              </button>
-            </div>
-          )}
-        </div>
+        <FormField
+          id="password"
+          label="Password"
+          type={showPassword ? "text" : "password"}
+          value={form.password}
+          onChange={(e) => handleFieldChange("password", e.target.value)}
+          onBlur={() => handleBlur("password", form.password)}
+          required
+          placeholder="Masukkan kata sandi"
+          minLength={minLength}
+          error={fieldErrors.password}
+          addonEnd={
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 text-brand-muted"
+              onClick={() => setShowPassword((v) => !v)}
+            >
+              {showPassword ? (
+                <EyeSlashIcon className="size-4" />
+              ) : (
+                <EyeIcon className="size-4" />
+              )}
+            </Button>
+          }
+        />
       )}
     </>
   );

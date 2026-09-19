@@ -1,12 +1,11 @@
 import { renderHookWithQuery, waitFor } from "@/hooks/test-utils";
 import { act } from "@testing-library/react";
 import { handler } from "../handler";
-import { useLogin, useForgotPassword } from "../hook";
+import { useLogin } from "../hook";
 
 jest.mock("../handler", () => ({
   handler: {
     login: jest.fn(),
-    forgotPassword: jest.fn(),
   },
 }));
 
@@ -43,37 +42,5 @@ describe("useLogin", () => {
         });
       }),
     ).rejects.toThrow("fail");
-  });
-});
-
-describe("useForgotPassword", () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  it("calls handler.forgotPassword", async () => {
-    h.forgotPassword.mockResolvedValue({ status: 0 } as any);
-
-    const { result } = renderHookWithQuery(() => useForgotPassword());
-
-    await act(async () => {
-      await result.current.mutateAsync({
-        email: "a@b.com",
-      });
-    });
-
-    expect(h.forgotPassword).toHaveBeenCalled();
-  });
-
-  it("propagates errors", async () => {
-    h.forgotPassword.mockRejectedValue(new Error("Network error"));
-
-    const { result } = renderHookWithQuery(() => useForgotPassword());
-
-    await expect(
-      act(async () => {
-        await result.current.mutateAsync({
-          email: "a@b.com",
-        });
-      }),
-    ).rejects.toThrow("Network error");
   });
 });

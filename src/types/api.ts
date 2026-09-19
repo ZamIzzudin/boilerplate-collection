@@ -25,7 +25,6 @@ export type Access = {
   canEdit?: boolean;
   canDelete?: boolean;
   canActive?: boolean;
-  canResetPassword?: boolean;
   canDownload?: boolean;
 };
 
@@ -35,7 +34,6 @@ export type DetailAccess = {
   canDelete?: boolean;
   canActive?: boolean;
   canDownload?: boolean;
-  canResetPassword?: boolean;
 };
 
 export type ActiveSheet = "FORM" | "DETAIL" | null;

@@ -4,8 +4,6 @@ import { loginSchema } from "../schemas";
 import { AuthFields } from "./shared/auth-fields";
 import { createBlurHandler, createChangeHandler } from "@/lib/validation";
 
-export type AuthFormType = "login" | "forgot-password";
-
 interface LoginFormProps {
   form: {
     email: string;
@@ -25,9 +23,6 @@ interface LoginFormProps {
   onSubmit: (e: SubmitEvent<HTMLFormElement>) => void;
   gen: () => void;
   validate: (value: string) => boolean;
-  formType: AuthFormType;
-  setFormType: React.Dispatch<React.SetStateAction<AuthFormType>>;
-  resetForm: () => void;
   formErrors?: Record<string, string>;
 }
 
@@ -39,9 +34,6 @@ export function LoginForm({
   onSubmit,
   gen,
   validate,
-  formType,
-  setFormType,
-  resetForm,
   formErrors = {},
 }: Readonly<LoginFormProps>) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -116,10 +108,7 @@ export function LoginForm({
           form={form}
           setForm={setForm}
           fieldErrors={mergedErrors}
-          setFormType={setFormType}
-          resetForm={resetForm}
           showPasswordField
-          showForgotPasswordButton
           handleFieldChange={handleFieldChange}
           handleBlur={handleBlur}
         />

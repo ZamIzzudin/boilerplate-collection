@@ -6,7 +6,7 @@ export type {
   LoginResponse,
 } from "@/types";
 
-import type { LoginPayload, LoginResponse, ForgotPasswordPayload } from "./types";
+import type { LoginPayload, LoginResponse } from "./types";
 
 export const handler = {
   login: async (
@@ -21,12 +21,5 @@ export const handler = {
     );
     const permVersion = headers?.["x-perm-version"] as string | undefined;
     return { ...data, perm_version: permVersion };
-  },
-  forgotPassword: async (payload: ForgotPasswordPayload) => {
-    const { data } = await apiNewClient.post("/user/forgot-password", {
-      email: payload.email,
-      submitted_by_admin: false,
-    });
-    return data;
   },
 };

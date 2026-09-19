@@ -2,7 +2,6 @@ import type {
   LoginAction,
   LoginPayload,
   LoginResponse,
-  ForgotPasswordPayload,
 } from "../types";
 
 describe("login types", () => {
@@ -26,10 +25,5 @@ describe("login types", () => {
       },
     };
     expect(r.status).toBe(200);
-  });
-
-  it("exports ForgotPasswordPayload type", () => {
-    const p: ForgotPasswordPayload = { email: "a@b.com" };
-    expect(p.email).toBe("a@b.com");
   });
 });

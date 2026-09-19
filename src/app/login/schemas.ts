@@ -6,7 +6,3 @@ export const loginSchema = z.object({
   password: requiredString("Password"),
   captcha: z.string().optional(),
 });
-
-export const forgotPasswordSchema = z.object({
-  email: z.email("Email tidak valid"),
-});
