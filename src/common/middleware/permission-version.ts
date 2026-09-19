@@ -1,26 +1,26 @@
 import type { NextFunction, Request, Response } from "express";
 import { prisma } from "@/lib/prisma";
+import { broadcastPermVersion } from "@/lib/sse";
 
 const PERM_VERSION_KEY = "perm_version";
 
 /**
- * Cache of the current permission version. Invalidated whenever menus,
- * actions or privileges change (see bumpPermissionVersion).
+ * Current permission version, read straight from the database on every call.
+ * No in-process cache: any instance behind a load balancer serves the same
+ * value without needing Redis or sticky sessions.
  */
-let cachedVersion: string | null = null;
-
 export const getPermissionVersion = async (): Promise<string> => {
-  if (cachedVersion) return cachedVersion;
-
   const setting = await prisma.setting.findUnique({
     where: { key: PERM_VERSION_KEY },
   });
-
-  cachedVersion = setting?.value ?? "1";
-  return cachedVersion;
+  return setting?.value ?? "1";
 };
 
-/** Bump the global permission version so clients refresh their privileges. */
+/**
+ * Bump the global permission version. Open SSE streams are notified
+ * immediately (see /auth/events); every other response picks the new value
+ * up from the database via the x-perm-version header.
+ */
 export const bumpPermissionVersion = async (): Promise<string> => {
   const next = String(Date.now());
   await prisma.setting.upsert({
@@ -28,13 +28,8 @@ export const bumpPermissionVersion = async (): Promise<string> => {
     create: { key: PERM_VERSION_KEY, value: next },
     update: { value: next },
   });
-  cachedVersion = next;
+  broadcastPermVersion(next);
   return next;
-};
-
-/** Only used in tests to reset module-level cache. */
-export const resetPermissionVersionCache = (): void => {
-  cachedVersion = null;
 };
 
 /**
