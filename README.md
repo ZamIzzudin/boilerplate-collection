@@ -2,7 +2,7 @@
 
 Boilerplate backend internal app: **Express 5 + TypeScript + Prisma + PostgreSQL**.
 
-Mengimplementasikan **modul auth lengkap** (login, refresh token httpOnly cookie, me, logout, lupa/reset password, aktivasi akun) dan **RBAC** (user, role/user-type, action, menu, privilege) sesuai kontrak API yang dipakai frontend.
+Mengimplementasikan **modul auth lengkap** (login, refresh token httpOnly cookie, me, logout, aktivasi akun, ganti password) dan **RBAC** (user, role/user-type, action, menu, privilege) sesuai kontrak API yang dipakai frontend.
 
 > Bagian dari repo [boilerplate](../README.md). Frontend pasangannya ada di branch **`react-vite`**. Kontrak API: [`docs/API-CONTRACT.md`](./docs/API-CONTRACT.md).
 
@@ -76,7 +76,7 @@ src/
 │   └── middleware/          # authenticate, authorize (RBAC), validate, permission-version, error-handler
 ├── lib/                     # prisma, jwt, password, crypto, cookies, mailer, id, pagination
 └── modules/
-    ├── auth/                # login, me, refresh, logout, profile, forgot/reset/activation, check/change password
+    ├── auth/                # login, me, refresh, logout, profile, events (SSE), activation, check/change password
     ├── user/                # CRUD user + role options + file avatar
     ├── user-type/           # user type (+ /roles alias)
     ├── action/              # CRUD action
@@ -102,7 +102,7 @@ src/
 2. **Request terproteksi** — `authenticate` membaca cookie `access_token`. Bila tidak ada/kadaluarsa → `401`, frontend memanggil `/auth/refresh` lalu retry (axios interceptor + failed request queue).
 3. **Refresh** (`GET /auth/refresh`) — verifikasi refresh cookie, rotasi kedua cookie.
 4. **Logout** (`POST /auth/logout`) — bersihkan cookie.
-5. **Reset & aktivasi** — token sekali pakai disimpan di tabel `auth_tokens`; link email berisi ciphertext AES `{ email, token }`.
+5. **Aktivasi** — token sekali pakai disimpan di tabel `auth_tokens`; link email berisi ciphertext AES `{ email, token }`. (Fitur lupa/reset password dihapus dari boilerplate.)
 
 ## RBAC
 

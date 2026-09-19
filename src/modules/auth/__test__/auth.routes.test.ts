@@ -113,4 +113,16 @@ describe("auth routes", () => {
     const res = await request(app).get("/does-not-exist");
     expect(res.status).toBe(404);
   });
+
+  it("password-recovery endpoints are gone (feature removed)", async () => {
+    const forgot = await request(app)
+      .post("/user/forgot-password")
+      .send({ email: "a@b.com" });
+    expect(forgot.status).toBe(404);
+
+    const reset = await request(app)
+      .post("/user/reset-password")
+      .send({ data: "payload" });
+    expect(reset.status).toBe(404);
+  });
 });

@@ -6,7 +6,6 @@ import {
   checkEmailSchema,
   checkPasswordSchema,
   encryptedPayloadSchema,
-  forgotPasswordSchema,
   loginSchema,
 } from "./auth.schema";
 import { authController } from "./auth.controller";
@@ -21,17 +20,7 @@ authRouter.get("/profile", authenticate, authController.profile);
 authRouter.get("/refresh", authController.refresh);
 authRouter.post("/logout", authController.logout);
 
-// User lifecycle (password & activation) — encrypted payloads.
-authRouter.post(
-  "/forgot-password",
-  validate(forgotPasswordSchema),
-  authController.forgotPassword,
-);
-authRouter.post(
-  "/reset-password",
-  validate(encryptedPayloadSchema),
-  authController.resetPassword,
-);
+// User lifecycle (activation & password) — encrypted payloads.
 authRouter.post(
   "/activation",
   validate(encryptedPayloadSchema),
@@ -57,16 +46,6 @@ authRouter.post(
 
 // Alias: the frontend calls /user/* for lifecycle endpoints.
 export const userAuthRouter = Router();
-userAuthRouter.post(
-  "/forgot-password",
-  validate(forgotPasswordSchema),
-  authController.forgotPassword,
-);
-userAuthRouter.post(
-  "/reset-password",
-  validate(encryptedPayloadSchema),
-  authController.resetPassword,
-);
 userAuthRouter.post(
   "/activation",
   validate(encryptedPayloadSchema),

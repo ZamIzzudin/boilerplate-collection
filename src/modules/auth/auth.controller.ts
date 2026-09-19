@@ -14,9 +14,7 @@ import type {
   changePasswordSchema,
   checkPasswordSchema,
   encryptedPayloadSchema,
-  forgotPasswordSchema,
   loginSchema,
-  resetPasswordSchema,
   validTokenSchema,
 } from "./auth.schema";
 
@@ -120,23 +118,6 @@ export const authController = {
   logout(_req: Request, res: Response) {
     clearSessionCookies(res);
     return ok(res, { loggedOut: true });
-  },
-
-  async forgotPassword(
-    req: Request<unknown, unknown, z.infer<typeof forgotPasswordSchema>>,
-    res: Response,
-  ) {
-    const result = await authService.forgotPassword(req.body.email);
-    return res.status(200).json(result);
-  },
-
-  async resetPassword(
-    req: Request<unknown, unknown, z.infer<typeof encryptedPayloadSchema>>,
-    res: Response,
-  ) {
-    const payload = decryptBody<z.infer<typeof resetPasswordSchema>>(req.body.data);
-    const result = await authService.resetPassword(payload);
-    return res.status(200).json(result);
   },
 
   async activation(

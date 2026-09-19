@@ -9,7 +9,7 @@ import { signAccessToken, signRefreshToken, verifyToken } from "@/lib/jwt";
 import { buildMenuTree } from "@/modules/menu/menu.tree";
 import type {
   LoginInput,
-  ResetPasswordInput,
+  ActivationInput,
   ValidTokenInput,
   ChangePasswordInput,
 } from "./auth.schema";
@@ -144,38 +144,8 @@ export const authService = {
     };
   },
 
-  async forgotPassword(email: string) {
-    const user = await prisma.user.findUnique({ where: { email } });
-
-    // Always respond success to avoid email enumeration.
-    if (!user) {
-      return { status: 0, message: "Jika email terdaftar, tautan reset telah dikirim" };
-    }
-
-    const token = generateToken();
-    await prisma.authToken.create({
-      data: {
-        email: user.email,
-        token,
-        action: "reset",
-        expiresAt: new Date(Date.now() + TOKEN_TTL_MS),
-      },
-    });
-
-    const encryptedToken = encrypt({ email: user.email, token });
-    const link = `${env.appUrl}/reset/${encryptedToken}`;
-
-    await sendMail({
-      to: user.email,
-      subject: "Atur Ulang Kata Sandi",
-      html: `<p>Klik tautan berikut untuk mengatur ulang kata sandi Anda:</p><p><a href="${link}">${link}</a></p>`,
-    });
-
-    return { status: 0, message: "Tautan reset telah dikirim" };
-  },
-
-  /** Helper used by reset & activation to consume a one-time token. */
-  async consumeToken(email: string, token: string, action: "reset" | "activation") {
+  /** Helper used by activation to consume a one-time token. */
+  async consumeToken(email: string, token: string, action: "activation") {
     const record = await prisma.authToken.findFirst({
       where: { email, token, action },
     });
@@ -187,36 +157,7 @@ export const authService = {
     return record;
   },
 
-  async resetPassword(input: ResetPasswordInput) {
-    if (input.new_password !== input.confirm_password) {
-      throw AppError.unprocessable("Validation error", {
-        confirm_password: "Konfirmasi password tidak cocok",
-      });
-    }
-    if (!isStrongPassword(input.new_password)) {
-      throw AppError.unprocessable("Validation error", {
-        new_password: "Password tidak memenuhi kriteria",
-      });
-    }
-
-    const record = await this.consumeToken(input.email, input.token, "reset");
-    const password = await hashPassword(input.new_password);
-
-    await prisma.$transaction([
-      prisma.user.update({
-        where: { email: input.email },
-        data: { password, statusCode: "ACTIVE" },
-      }),
-      prisma.authToken.update({
-        where: { id: record.id },
-        data: { usedAt: new Date() },
-      }),
-    ]);
-
-    return { status: 0, message: "Kata sandi berhasil diubah" };
-  },
-
-  async activate(input: ResetPasswordInput) {
+  async activate(input: ActivationInput) {
     if (input.new_password !== input.confirm_password) {
       throw AppError.unprocessable("Validation error", {
         confirm_password: "Konfirmasi password tidak cocok",
