@@ -19,21 +19,23 @@ export type PaginatedDataResponse<T> = {
 };
 
 export type Access = {
-  canEditRoom: boolean;
-  canAdd: boolean;
-  canEdit: boolean;
-  canDeleteRoom?: boolean;
-  canApprove:boolean;
+  canView?: boolean;
+  canViewDetail?: boolean;
+  canAdd?: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
+  canActive?: boolean;
+  canResetPassword?: boolean;
+  canDownload?: boolean;
 };
 
 export type DetailAccess = {
-  canEdit: boolean;
-  canDelete: boolean;
-  canActive: boolean;
-  canDownload: boolean;
-  canResetPassword: boolean;
-  canEditRoom?: boolean;
-  canDeleteRoom?: boolean;
+  canViewDetail?: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
+  canActive?: boolean;
+  canDownload?: boolean;
+  canResetPassword?: boolean;
 };
 
 export type ActiveSheet = "FORM" | "DETAIL" | null;

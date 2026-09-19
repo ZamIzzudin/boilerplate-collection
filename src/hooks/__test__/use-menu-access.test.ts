@@ -36,23 +36,13 @@ describe("useMenuAccess", () => {
     const { result } = renderHook(() => useMenuAccess("/nonexistent"));
 
     expect(result.current.canView).toBe(false);
+    expect(result.current.canViewDetail).toBe(false);
     expect(result.current.canAdd).toBe(false);
     expect(result.current.canEdit).toBe(false);
     expect(result.current.canDelete).toBe(false);
-    expect(result.current.canApprove).toBe(false);
-    expect(result.current.canReject).toBe(false);
-    expect(result.current.canViewDetail).toBe(false);
     expect(result.current.canResetPassword).toBe(false);
     expect(result.current.canActive).toBe(false);
     expect(result.current.canDownload).toBe(false);
-    expect(result.current.canEditRoom).toBe(false);
-    expect(result.current.canUploadHealth).toBe(false);
-    expect(result.current.canUploadPayment).toBe(false);
-    expect(result.current.canUploadQuarantine).toBe(false);
-    expect(result.current.canVerifPayment).toBe(false);
-    expect(result.current.canVerifQR).toBe(false);
-    expect(result.current.canVerifQuarantine).toBe(false);
-    expect(result.current.canCancel).toBe(false);
   });
 
   it("returns correct flags for matching menu with all actions", () => {
@@ -62,23 +52,13 @@ describe("useMenuAccess", () => {
     const { result } = renderHook(() => useMenuAccess("/master"));
 
     expect(result.current.canView).toBe(true);
+    expect(result.current.canViewDetail).toBe(true);
     expect(result.current.canAdd).toBe(true);
     expect(result.current.canEdit).toBe(true);
     expect(result.current.canDelete).toBe(true);
-    expect(result.current.canApprove).toBe(true);
-    expect(result.current.canReject).toBe(true);
-    expect(result.current.canViewDetail).toBe(true);
     expect(result.current.canResetPassword).toBe(true);
     expect(result.current.canActive).toBe(true);
     expect(result.current.canDownload).toBe(true);
-    expect(result.current.canEditRoom).toBe(true);
-    expect(result.current.canUploadHealth).toBe(true);
-    expect(result.current.canUploadPayment).toBe(true);
-    expect(result.current.canUploadQuarantine).toBe(true);
-    expect(result.current.canVerifPayment).toBe(true);
-    expect(result.current.canVerifQR).toBe(true);
-    expect(result.current.canVerifQuarantine).toBe(true);
-    expect(result.current.canCancel).toBe(true);
   });
 
   it("normalizes path by removing leading slash (case-insensitive)", () => {
@@ -114,36 +94,25 @@ describe("useMenuAccess", () => {
   it("finds action codes in deeply nested subMenus", () => {
     const deepMenu = makeMenu("/root", [], [
       makeMenu("/mid", [], [
-        makeMenu("/deep", [{ code: ACTION_CODES.APPROVE }]),
+        makeMenu("/deep", [{ code: ACTION_CODES.ACTIVE_TOGGLE }]),
       ]),
     ]);
     mockUsePrivilegeStore.mockReturnValue([deepMenu]);
 
     const { result } = renderHook(() => useMenuAccess("/deep"));
-    expect(result.current.canApprove).toBe(true);
+    expect(result.current.canActive).toBe(true);
   });
 
   it("each permission flag maps to its correct ACTION_CODE", () => {
-    const mapping: [keyof typeof result, string][] = [
+    const mapping: [keyof ReturnType<typeof useMenuAccess>, string][] = [
       ["canView", ACTION_CODES.LIST],
+      ["canViewDetail", ACTION_CODES.VIEW],
       ["canAdd", ACTION_CODES.ADD],
       ["canEdit", ACTION_CODES.EDIT],
       ["canDelete", ACTION_CODES.DELETE],
-      ["canApprove", ACTION_CODES.APPROVE],
-      ["canReject", ACTION_CODES.REJECT],
-      ["canViewDetail", ACTION_CODES.VIEW],
       ["canResetPassword", ACTION_CODES.RESET],
       ["canActive", ACTION_CODES.ACTIVE_TOGGLE],
       ["canDownload", ACTION_CODES.DOWNLOAD],
-      ["canEditRoom", ACTION_CODES.EDIT_ROOM],
-      ["canDeleteRoom", ACTION_CODES.DELETE_ROOM],
-      ["canUploadHealth", ACTION_CODES.UPLOAD_HEALTH],
-      ["canUploadPayment", ACTION_CODES.UPLOAD_PAYMENT],
-      ["canUploadQuarantine", ACTION_CODES.UPLOAD_QUARANTINE],
-      ["canVerifPayment", ACTION_CODES.VERIF_PAYMENT],
-      ["canVerifQR", ACTION_CODES.VERIF_QR],
-      ["canVerifQuarantine", ACTION_CODES.VERIF_QUARANTINE],
-      ["canCancel", ACTION_CODES.CANCEL],
     ];
 
     for (const [prop, code] of mapping) {
@@ -155,11 +124,11 @@ describe("useMenuAccess", () => {
   });
 
   it("handles menu with undefined or null path gracefully", () => {
-    const menuWithoutPath = { path: undefined, actions: [{ code: ACTION_CODES.DELETE_ROOM }] } as unknown as SidebarMenuList;
+    const menuWithoutPath = { path: undefined, actions: [{ code: ACTION_CODES.DELETE }] } as unknown as SidebarMenuList;
     mockUsePrivilegeStore.mockReturnValue([menuWithoutPath]);
 
     const { result } = renderHook(() => useMenuAccess("/test"));
-    expect(result.current.canDeleteRoom).toBe(false);
+    expect(result.current.canDelete).toBe(false);
   });
 
   it("returns empty actions set when menu.actions is undefined", () => {
@@ -194,4 +163,3 @@ describe("useMenuAccess", () => {
     expect(result.current.canViewDetail).toBe(true);
   });
 });
-

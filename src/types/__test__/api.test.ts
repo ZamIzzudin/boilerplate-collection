@@ -22,21 +22,24 @@ describe("api types", () => {
   });
 
   it("exports Access type", () => {
-    const access: Access = { canAdd: true, canEdit: false, canEditRoom: true, canDeleteRoom: true };
+    const access: Access = { canView: true, canAdd: true, canEdit: false, canDelete: true };
     expect(access.canAdd).toBe(true);
-    expect(access.canEditRoom).toBe(true);
-    expect(access.canDeleteRoom).toBe(true);
+    expect(access.canEdit).toBe(false);
+    expect(access.canDelete).toBe(true);
   });
 
   it("exports DetailAccess type", () => {
     const access: DetailAccess = {
-      canEdit: true, canDelete: false, canActive: true,
-      canDownload: false, canResetPassword: true,
-      canEditRoom: true, canDeleteRoom: true,
+      canViewDetail: true,
+      canEdit: true,
+      canDelete: false,
+      canActive: true,
+      canDownload: false,
+      canResetPassword: true,
     };
     expect(access.canEdit).toBe(true);
-    expect(access.canEditRoom).toBe(true);
-    expect(access.canDeleteRoom).toBe(true);
+    expect(access.canViewDetail).toBe(true);
+    expect(access.canDelete).toBe(false);
   });
 
   it("exports ActiveSheet type", () => {

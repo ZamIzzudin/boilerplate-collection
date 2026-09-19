@@ -58,6 +58,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { notifyFailed, notifySuccess, notifyWarning } from "@/lib/notify";
+import { ACTION_CODES } from "@/lib/action-codes";
 import { ConfirmActionButton } from "@/components/confirm-action-button";
 import { AlertMessage } from "@/components/ui/alert-message";
 import { TableRowActionMenu } from "@/components/table-row-action-menu";
@@ -248,7 +249,7 @@ const sidebarPreviewMenus: SidebarMenu[] = [
     path: null,
     icon: "Users",
     sortOrder: 0,
-    actions: [{ code: "ACT1780387013007", name: "view" }],
+    actions: [{ code: ACTION_CODES.VIEW, name: "view" }],
     isGroup: false,
     subMenus: [
       {
@@ -257,7 +258,7 @@ const sidebarPreviewMenus: SidebarMenu[] = [
         path: "/dokter/data",
         icon: "Users",
         sortOrder: 0,
-        actions: [{ code: "ACT1780387013007", name: "view" }],
+        actions: [{ code: ACTION_CODES.VIEW, name: "view" }],
         subMenus: [],
         isGroup: false,
       },
@@ -269,7 +270,7 @@ const sidebarPreviewMenus: SidebarMenu[] = [
     path: "/pelabuhan",
     icon: "Database",
     sortOrder: 1,
-    actions: [{ code: "ACT1780387013007", name: "view" }],
+    actions: [{ code: ACTION_CODES.VIEW, name: "view" }],
     subMenus: [],
     isGroup: false,
   },
@@ -316,12 +317,12 @@ export default function DungeonPage() {
     .map((item) => ({
       ...item,
       subMenus: item.subMenus.filter((sub) =>
-        sub.actions.some((a) => a.code === "ACT1780387013007"),
+        sub.actions.some((a) => a.code === ACTION_CODES.VIEW),
       ),
     }))
     .filter(
       (item) =>
-        item.actions.some((a) => a.code === "ACT1780387013007") ||
+        item.actions.some((a) => a.code === ACTION_CODES.VIEW) ||
         item.subMenus.length > 0,
     )
     .filter((item) => {

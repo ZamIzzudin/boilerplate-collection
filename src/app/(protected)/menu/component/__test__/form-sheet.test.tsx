@@ -168,11 +168,11 @@ describe("FormSheet", () => {
   };
 
   const mockAccess: Access = {
+    canView: true,
+    canViewDetail: true,
     canAdd: true,
     canEdit: true,
     canDelete: true,
-    canView: true,
-    canViewDetail: true,
   };
 
   const defaultProps = {
@@ -330,11 +330,11 @@ describe("FormSheet", () => {
 
   it("should return null when access can't add or edit", () => {
     const accessWithoutPermissions: Access = {
+      canView: false,
+      canViewDetail: false,
       canAdd: false,
       canEdit: false,
       canDelete: false,
-      canView: false,
-      canViewDetail: false,
     };
 
     const { container } = render(

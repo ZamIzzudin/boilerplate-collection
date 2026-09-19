@@ -27,24 +27,13 @@ export const useMenuAccess = (menuKey: string) => {
     return {
       isLoading: false,
       canView: codes.has(ACTION_CODES.LIST),
+      canViewDetail: codes.has(ACTION_CODES.VIEW),
       canAdd: codes.has(ACTION_CODES.ADD),
       canEdit: codes.has(ACTION_CODES.EDIT),
       canDelete: codes.has(ACTION_CODES.DELETE),
-      canApprove: codes.has(ACTION_CODES.APPROVE),
-      canReject: codes.has(ACTION_CODES.REJECT),
-      canViewDetail: codes.has(ACTION_CODES.VIEW),
       canResetPassword: codes.has(ACTION_CODES.RESET),
       canActive: codes.has(ACTION_CODES.ACTIVE_TOGGLE),
       canDownload: codes.has(ACTION_CODES.DOWNLOAD),
-      canEditRoom: codes.has(ACTION_CODES.EDIT_ROOM),
-      canDeleteRoom: codes.has(ACTION_CODES.DELETE_ROOM),
-      canUploadHealth: codes.has(ACTION_CODES.UPLOAD_HEALTH),
-      canUploadPayment: codes.has(ACTION_CODES.UPLOAD_PAYMENT),
-      canUploadQuarantine: codes.has(ACTION_CODES.UPLOAD_QUARANTINE),
-      canVerifPayment: codes.has(ACTION_CODES.VERIF_PAYMENT),
-      canVerifQR: codes.has(ACTION_CODES.VERIF_QR),
-      canVerifQuarantine: codes.has(ACTION_CODES.VERIF_QUARANTINE),
-      canCancel: codes.has(ACTION_CODES.CANCEL),
     };
   }, [menuKey, menus]);
 };
