@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 /**
  * Role based access control guard.
- * Usage: `router.get("/users", authenticate, authorize("ACT1781056372012", "MNU_USER"), handler)`
+ * Usage: `router.get("/users", authenticate, authorize("ACT_LIST", "MNU_USER"), handler)`
  *
  * A privilege is granted when an ACTIVE privilege row exists for the user's
  * user-type, menu and action.

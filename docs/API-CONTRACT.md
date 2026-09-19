@@ -170,28 +170,19 @@ Response: `{ "status": 0, "perm_version": "<version>" }` — **wajib bump `perm_
 
 ## 6. Action Codes (seed wajib)
 
-Frontend me-hardcode kode aksi di `src/lib/action-codes.ts` (`ACTION_CODES`) dan memakainya untuk `use-menu-access`. Artinya **backend wajib menyediakan action dengan `action_code` yang persis sama** (bukan sekadar konsisten), karena `menu.actions[].code` dari `/auth/login` & `/auth/me` dibandingkan langsung dengan nilai-nilai ini:
+Frontend me-hardcode kode aksi di `src/lib/action-codes.ts` (`ACTION_CODES`) dan memakainya untuk `use-menu-access`. Artinya **backend wajib menyediakan action dengan `action_code` yang persis sama**, karena `menu.actions[].code` dari `/auth/login` & `/auth/me` dibandingkan langsung dengan nilai-nilai ini.
 
-| Key | `action_code` |
-|---|---|
-| `VIEW` | `ACT1780387013007` |
-| `ADD` | `ACT1779689449003` |
-| `EDIT` | `ACT1780387019008` |
-| `DELETE` | `ACT1780387028009` |
-| `APPROVE` | `ACT1780458369010` |
-| `REJECT` | `ACT1781146783014` |
-| `RESET` | `ACT1780978958011` |
-| `LIST` | `ACT1781056372012` |
-| `ACTIVE_TOGGLE` | `ACT1781057065013` |
-| `DOWNLOAD` | `ACT1782444061019` |
-| `EDIT_ROOM` | `ACT1781925870016` |
-| `DELETE_ROOM` | `ACT1781925881017` |
-| `UPLOAD_HEALTH` | `ACT1782714618026` |
-| `UPLOAD_PAYMENT` | `ACT1782714499023` |
-| `UPLOAD_QUARANTINE` | `ACT1782714469022` |
-| `VERIF_PAYMENT` | `ACT1782714312020` |
-| `VERIF_QR` | `ACT1782714532024` |
-| `VERIF_QUARANTINE` | `ACT1782714363021` |
-| `CANCEL` | `ACT1782714708027` |
+Delapan action di bawah ini adalah standar minimum yang harus ada di database (sesuai `actions` yang ada di DB):
+
+| Key | `action_code` | Nama |
+|---|---|---|
+| `LIST` | `ACT_LIST` | List |
+| `VIEW` | `ACT_VIEW` | View |
+| `ADD` | `ACT_ADD` | Add |
+| `EDIT` | `ACT_EDIT` | Edit |
+| `DELETE` | `ACT_DELETE` | Delete |
+| `RESET` | `ACT_RESET` | Reset Password |
+| `ACTIVE_TOGGLE` | `ACT_ACTIVE_TOGGLE` | Aktif/Nonaktif |
+| `DOWNLOAD` | `ACT_DOWNLOAD` | Download |
 
 Seed default (`express/prisma/seed.ts`) sudah memakai kode-kode di atas.
