@@ -42,6 +42,37 @@ globalThis.ResizeObserver = jest.fn().mockImplementation(() => ({
   disconnect: jest.fn(),
 })) as any;
 
+// jsdom has no EventSource implementation; provide a passive stub so
+// components that open permission-event streams can render in tests.
+// Tests that exercise the stream replace this with their own mock.
+if (typeof globalThis.EventSource === "undefined") {
+  class EventSourceStub {
+    static readonly CONNECTING = 0;
+    static readonly OPEN = 1;
+    static readonly CLOSED = 2;
+
+    readonly url: string;
+    readonly withCredentials: boolean;
+    readyState = 0;
+    onopen: (() => void) | null = null;
+    onerror: (() => void) | null = null;
+
+    constructor(url: string, options?: EventSourceInit) {
+      this.url = url;
+      this.withCredentials = options?.withCredentials ?? false;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    addEventListener(_type: string): void {}
+
+    close(): void {
+      this.readyState = EventSourceStub.CLOSED;
+    }
+  }
+
+  globalThis.EventSource = EventSourceStub as unknown as typeof EventSource;
+}
+
 // Polyfill MessageChannel (dibutuhkan beberapa library UI)
 if (!globalThis.MessageChannel) {
   class MessageChannel {

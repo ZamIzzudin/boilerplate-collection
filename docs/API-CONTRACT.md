@@ -63,6 +63,24 @@ Response `200` + header `x-perm-version`:
 ### GET `/auth/refresh`
 Rotasi cookie session (refresh token). Response `200` kosong/berisi data user. `401` jika refresh token invalid → frontend logout.
 
+### GET `/auth/events` (authed via refresh cookie — SSE)
+Stream **Server-Sent Events** untuk push `perm_version` secara real-time ke frontend (tanpa polling):
+
+- **Autentikasi: cookie refresh token** (`internal_session`), bukan access token — supaya koneksi bertahan melintasi rotasi token 30 menit tanpa reconnect.
+- Response: `Content-Type: text/event-stream`; koneksi terbuka terus.
+- Saat connect, server langsung mengirim versi terkini (klien reconnect tidak akan ketinggalan bump).
+- Setiap `bumpPermissionVersion()` (perubahan privilege/menu/action/role) mem-push event ke semua koneksi terbuka.
+- Keepalive `: ping` setiap 30 detik (frame komentar, bukan request) agar proxy tidak memutus stream idle.
+
+```
+retry: 10000
+
+event: perm-version
+data: <perm_version>
+```
+
+Frontend (`usePermissionEvents`) membandingkan `data` dengan versi tersimpan; jika beda → `GET /auth/me` sekali → privilege store diperbarui. Header `x-perm-version` pada response biasa tetap berlaku sebagai fallback (mis. koneksi SSE sedang putus).
+
 ### POST `/auth/logout` (authed)
 Hapus cookie session.
 

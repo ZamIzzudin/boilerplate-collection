@@ -35,6 +35,7 @@ const config = {
     "!src/vite-env.d.ts",
   ],
   moduleNameMapper: {
+    "^@/lib/config$": "<rootDir>/__mocks__/lib-config.ts",
     "\\.svg$": "<rootDir>/__mocks__/fileMock.js",
     "\\.(jpg|jpeg|png|gif|webp)$": "<rootDir>/__mocks__/fileMock.js",
     "^@/(.*)$": "<rootDir>/src/$1",

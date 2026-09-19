@@ -3,6 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { useAuthStore } from "@/store/auth-store";
 import { usePrivilegeStore } from "@/store/privilege-store";
+import { usePermissionEvents } from "@/hooks/use-permission-events";
 
 export function ProtectedLayout() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -10,6 +11,8 @@ export function ProtectedLayout() {
     (state) => state,
   );
   const { user } = useAuthStore();
+
+  usePermissionEvents();
 
   useEffect(() => {
     if (!isAuthenticated) {

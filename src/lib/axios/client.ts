@@ -38,7 +38,7 @@ const handleLogout = () => {
   }
 };
 
-const refreshPrivilegesIfVersionChanged = async (
+export const refreshPrivilegesIfVersionChanged = async (
   responseVersion: string | undefined,
   endpoint: ApiEndpoint,
 ) => {

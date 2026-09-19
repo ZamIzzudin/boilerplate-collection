@@ -90,8 +90,9 @@ Setiap modul memisahkan tanggung jawab:
 3. Axios interceptor (`lib/axios/client.ts`):
    - `401` → otomatis `GET /auth/refresh`, request yang gagal diantrikan lalu di-retry; bila refresh gagal → logout.
    - Header `x-perm-version` berubah → privilege di-refresh otomatis.
-4. `ProtectedLayout` menjaga route: wajib `isAuthenticated`, privilege siap, dan user tersedia; jika tidak → redirect `/login`.
-5. `PublicLayout` mengarahkan user yang sudah login ke `/dashboard`.
+4. `usePermissionEvents` (dipasang di `ProtectedLayout`) membuka stream SSE `GET /auth/events` (auth via cookie refresh token, tanpa polling). Saat admin mengubah privilege, server push `perm-version` baru → FE memanggil `/auth/me` sekali → `privilege-store` diperbarui → sidebar & tombol menyesuaikan seketika. Header `x-perm-version` tetap menjadi fallback saat stream sedang reconnect.
+5. `ProtectedLayout` menjaga route: wajib `isAuthenticated`, privilege siap, dan user tersedia; jika tidak → redirect `/login`.
+6. `PublicLayout` mengarahkan user yang sudah login ke `/dashboard`.
 
 ## RBAC
 
